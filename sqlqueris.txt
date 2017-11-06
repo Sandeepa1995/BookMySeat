@@ -1,0 +1,9 @@
+create table user
+	(passenger_id		varchar(10),
+	 email		        varchar(254),
+	 name	            varchar(60),
+	 password	        varchar(60),
+	 contact_no	        varchar(10),
+	 primary key 	    (passenger_id)
+	);
+
