@@ -35,6 +35,7 @@ router.post('/register',(req,res,next)=>{
                     }
                 }
             });
+            sqlcon.connection.end();
         });
     });
 });

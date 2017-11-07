@@ -1,0 +1,30 @@
+{
+  "name": "v10",
+  "version": "1.0.0",
+  "description": "BookMySeat: Bus seat booking system.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "*",
+    "mysql": "*",
+    "bcryptjs": "*",
+    "cors": "*",
+    "jsonwebtoken": "*",
+    "body-parser": "*",
+    "passport": "*",
+    "passport-jwt": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sandeepa1995/BookMySeat.git"
+  },
+  "author": "CSE Group 25",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sandeepa1995/BookMySeat/issues"
+  },
+  "homepage": "https://github.com/Sandeepa1995/BookMySeat#readme"
+}

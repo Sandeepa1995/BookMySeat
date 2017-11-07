@@ -35,13 +35,15 @@ app.use("/operator",operator);
 app.use("/company",company);
 
 //Is database connected
-// sqlcon.connection.connect(function(err) {
-//     if (err) {
-//         console.error('error connecting: ' + err.stack);
-//         return;
-//     }
-//     console.log('connected as id ' + sqlcon.connection.threadId);
-// });
+sqlcon.connection.connect(function(err) {
+    if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+    }
+    console.log('connected as id ' + sqlcon.connection.threadId);
+});
+sqlcon.connection.end();
+
 
 //Index Route
 app.get('/',(req,res)=>{
