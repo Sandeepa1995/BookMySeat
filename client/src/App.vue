@@ -2,7 +2,10 @@
   <v-app>
     <v-navigation-drawer v-model="sideNav" temporary="temporary">
       <v-list>
-        <v-list-tile v-for="item in menuItems" :key="item.title">
+        <v-list-tile v-for="item in menuItems"
+                     :key="item.title"
+                      router
+                     :to="item.link">
           <v-list-tile-action>
             <v-icon>{{item.icon}}</v-icon>
           </v-list-tile-action>
@@ -14,12 +17,21 @@
       <v-toolbar-side-icon
       @click.native="sideNav=!sideNav"
       class="hidden-sm-and-up"></v-toolbar-side-icon>
-      <v-toolbar-title>{{title}}</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">{{title}}</router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat v-for="item in menuItems" :key="item.title">
+        <v-btn flat v-for="item in menuItems"
+               :key="item.title"
+               router
+               :to="item.link">
           <v-icon left>{{item.icon}}</v-icon>
           {{item.title}}
+        </v-btn>
+        <v-btn flat v-show="loggable" @click="logout">
+          <v-icon left>lock</v-icon>
+          Logout
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -35,7 +47,7 @@
       </v-content>
     </main>
 
-    <v-footer :fixed="fixed" app>
+    <v-footer app>
       <span>&copy; 2017</span>
     </v-footer>
   </v-app>
@@ -49,11 +61,42 @@
       return {
         sideNav:false,
         title: 'BookMySeat',
-        menuItems: [
-          {icon:"settings", title:"Settings"},
-          {icon:"supervisor_account", title:"Register"},
-          {icon:"lock_open", title:"Sign In"}
-        ]
+        user: null
+      }
+    },
+    computed:{
+      menuItems(){
+        let menuItems = [
+          {icon:"supervisor_account", title:"Register",link:'/register'},
+          {icon:"lock_open", title:"Sign In",link:'/login'}
+        ];
+        if(localStorage.getItem("user")){
+          menuItems = [
+            {icon:"settings", title:"Settings", link:'/'}
+          ]
+        }
+        return menuItems
+      },
+      loggable(){
+        if(localStorage.getItem("user")){
+          return true
+        }
+        else{
+          return false
+        }
+      }
+    },
+    mounted(){
+      this.user=localStorage.getItem('user');
+    },
+    methods: {
+      logout(){
+        localStorage.setItem("token",null);
+        localStorage.setItem("user",null);
+        localStorage.clear();
+//        localStorage.setItem("message","User logged out");
+        this.$router.push('/');
+        location.reload();
       }
     }
   }

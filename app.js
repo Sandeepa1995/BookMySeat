@@ -42,7 +42,7 @@ sqlcon.connection.connect(function(err) {
     }
     console.log('connected as id ' + sqlcon.connection.threadId);
 });
-sqlcon.connection.end();
+// sqlcon.connection.end();
 
 
 //Index Route
