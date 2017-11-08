@@ -21,6 +21,7 @@ let transproter = nodemailer.createTransport({
     }
 });
 
+
 //Authenticate
 router.post('/authenticate',(req,res,next)=>{
     const email = req.body.email;
