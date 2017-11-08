@@ -12,7 +12,7 @@ const app=express();
 const passenger = require('./routes/passenger');
 const operator = require('./routes/operator');
 const owner = require('./routes/owner');
-const ntc = require('./routes/ntc')
+const ntc = require('./routes/ntc');
 
 const generator = require('generate-password');
 const jwt=require('jsonwebtoken');

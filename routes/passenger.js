@@ -120,6 +120,7 @@ router.post('/changepass',passport.authenticate('jwt',{session:false}),(req,res,
     });
 });
 
+//Change Details
 router.post('/changedetails',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
     const email = req.body.email;
     const contact = req.body.contact;
