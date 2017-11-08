@@ -152,6 +152,31 @@ export default {
               console.log(error);
             });
         }
+        else if (this.type.text === "Bus Operator") {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/operator/authenticate',
+            data: {
+              email: this.email,
+              password: this.password
+            },
+            headers: {'Content-Type': 'application/json'}
+          }).then((response) => {
+            console.log(response.data);
+            if (!response.data.success) {
+              this.message = response.data.msg;
+            }
+            else {
+              localStorage.setItem("user",JSON.stringify(response.data.user));
+              localStorage.setItem("token",response.data.token);
+              this.$router.push('/');
+              location.reload();
+            }
+          })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
       }
     }
   }

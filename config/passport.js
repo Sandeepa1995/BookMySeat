@@ -56,6 +56,22 @@ module.exports = function (passport) {
                 }
             });
         }
+        else if(jwt_payload.type==="Operator") {
+            sqlcon.connection.query("SELECT * FROM operator WHERE email=?", [jwt_payload.data.email], function (error, resntc, fields) {
+                if (error) {
+                    return done(error, false);
+                }
+                else {
+                    if (resntc.length === 0) {
+                        console.log("User not found");
+                        return done(null, false);
+                    }
+                    else {
+                        return done(null, resntc[0]);
+                    }
+                }
+            });
+        }
     }));
 };
 

@@ -269,6 +269,31 @@ export default {
             });
         }
       }
+      else if (this.user.type === "Bus Operator") {
+        if (this.$refs.form.validate()) {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/operator/changepass',
+            data: {
+              email: this.user.email,
+              password: this.oldpassword,
+              newpass: this.password
+            },
+            headers: {'Content-Type': 'application/json','Authorization':this.token}
+          }).then((response) => {
+            console.log(response.data);
+            if (!response.data.success) {
+              this.message = response.data.msg;
+            }
+            else {
+              this.message = response.data.msg;
+            }
+          })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      }
     },
     submitDetails () {
       if (this.user.type === "Passenger") {
@@ -302,6 +327,32 @@ export default {
           axios({
             method: 'post',
             url: 'http://localhost:3000/owner/changedetails',
+            data: {
+              email: this.user.email,
+              contact: this.contact,
+              name: this.name
+            },
+            headers: {'Content-Type': 'application/json','Authorization':this.token}
+          }).then((response) => {
+            console.log(response.data);
+            if (!response.data.success) {
+              this.message = response.data.msg;
+              localStorage.setItem("user",JSON.stringify(response.data.user));
+            }
+            else {
+              this.message = response.data.msg;
+            }
+          })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      }
+      else if (this.user.type === "Bus Operator") {
+        if (this.$refs.detailform.validate()) {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/operator/changedetails',
             data: {
               email: this.user.email,
               contact: this.contact,
