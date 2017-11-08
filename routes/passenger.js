@@ -59,7 +59,7 @@ router.post('/authenticate',(req,res,next)=>{
                     return res.json({success:false,msg:"Error"})
                 }
                 if (isMatch){
-                    const token = jwt.sign({data:results[0]},"BookMySeatSecret",{
+                    const token = jwt.sign({data:results[0],type:"Passenger"},"BookMySeatSecret",{
                         expiresIn: 604800 //1 week
                     });
 

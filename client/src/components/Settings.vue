@@ -257,13 +257,10 @@ export default {
       if (this.$refs.addownerform.validate()) {
         axios({
           method: 'post',
-          url: 'http://localhost:3000/owner/register',
+          url: 'http://localhost:3000/ntc/registerowner',
           data: {
-            id:this.nIC,
-            name: this.name,
-            email:this.email,
-            password:this.password,
-            contact:this.contact
+            name: this.ownername,
+            email:this.owneremail
           },
           headers: {'Content-Type': 'application/json'}
         }).then((response)=> {
@@ -272,8 +269,7 @@ export default {
             this.message=response.data.msg;
           }
           else {
-            localStorage.setItem("message",response.data.msg);
-            this.$router.push('/login');
+            this.message=response.data.msg;
           }
         })
           .catch(function (error) {
