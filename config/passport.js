@@ -8,17 +8,29 @@ module.exports = function (passport) {
     opts.secretOrKey="BookMySeatSecret";
     passport.use(new JwtStratergy(opts, (jwt_payload,done)=>{
         // console.log(jwt_payload);
-        sqlcon.connection.query("SELECT * FROM user WHERE email='"+jwt_payload.data.email.toString()+"'", function (error, results, fields) {
-            if (error){
-                return done(error,false);
+        sqlcon.connection.query("SELECT * FROM user WHERE email=?",[jwt_payload.data.email], function (error, respsn, fields) {
+            if (error) {
+                return done(error, false);
             }
             else {
-                if (results.length === 0) {
-                    console.log("User not found");
-                    return done(null,false);
+                if (respsn.length === 0) {
+                    sqlcon.connection.query("SELECT * FROM ntc WHERE email=?",[jwt_payload.data.email], function (error, resntc, fields) {
+                        if (error) {
+                            return done(error, false);
+                        }
+                        else {
+                            if (resntc.length === 0) {
+                                console.log("User not found");
+                                return done(null, false);
+                            }
+                            else {
+                                return done(null, resntc[0]);
+                            }
+                        }
+                    });
                 }
                 else {
-                    return done(null,results[0]);
+                    return done(null, respsn[0]);
                 }
             }
         });

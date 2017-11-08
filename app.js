@@ -11,7 +11,8 @@ const app=express();
 
 const passenger = require('./routes/passenger');
 const operator = require('./routes/operator');
-const company = require('./routes/company');
+const owner = require('./routes/owner');
+const ntc = require('./routes/ntc');
 
 // //Port Number
 const  port=process.env.PORT || 3000;
@@ -34,7 +35,8 @@ require('./config/passport')(passport);
 //Routes
 app.use("/passenger",passenger);
 app.use("/operator",operator);
-app.use("/company",company);
+app.use("/owner",owner);
+app.use("/ntc",ntc);
 
 //Is database connected
 sqlcon.connection.connect(function(err) {
@@ -63,17 +65,13 @@ app.listen(port,()=>{
 
 // bcrypt.genSalt(10,function (err,salt) {
 //     bcrypt.hash("password",salt,(err,hash) =>{
-//         sqlcon.connection.query("INSERT INTO ntc VALUES (?,?)",[
+//         sqlcon.connection.query("INSERT INTO ntc VALUES (?,?,?)",[
 //             "ntc@gov.lk",
-//             hash
+//             hash,
+//             "0112587372"
 //         ], function (error, results, fields) {
-//             if (error)
-//             {
-//                 console.log("Error");
-//             }
-//             else {
-//                 console.log("Success");
-//             }
+//             if (error) throw  error;
+//             console.log("Success");
 //         });
 //     });
 // });

@@ -6,7 +6,7 @@
     <v-tabs dark fixed icons centered>
       <v-tabs-bar class="red darken-4">
         <v-tabs-slider color="yellow"></v-tabs-slider>
-        <v-tabs-item href="profile" v-show="user.type!='NTC'">
+        <v-tabs-item href="profile">
           <v-icon>account_circle</v-icon>
           User Profile
         </v-tabs-item>
@@ -24,7 +24,7 @@
         </v-tabs-item>
       </v-tabs-bar>
       <v-tabs-items>
-        <v-tabs-content id="profile" v-show="user.type!='NTC'">
+        <v-tabs-content id="profile">
           <v-card flat style="padding: 50px">
             <h6>Account Type: {{user.type}}</h6>
             <h6>E-Mail: {{user.email}}</h6>
@@ -35,6 +35,7 @@
                 :rules="nameRules"
                 :counter="60"
                 required
+                :disabled="user.type=='NTC'"
               ></v-text-field>
               <v-text-field
                 label="Contact Number"
@@ -43,8 +44,10 @@
                 placeholder="0771952458"
                 :counter="10"
                 required
+                :disabled="user.type=='NTC'"
               ></v-text-field>
               <v-btn
+                v-show="user.type!='NTC'"
                 @click="submitDetails"
                 :disabled="!validDetails"
               >
@@ -53,7 +56,7 @@
             </v-form>
           </v-card>
         </v-tabs-content>
-        <v-tabs-content id="changepass" >
+        <v-tabs-content id="changepass">
           <v-card flat>
             <v-form v-model="valid" ref="form" style="padding: 50px">
               <v-text-field
@@ -94,6 +97,32 @@
             </v-form>
           </v-card>
         </v-tabs-content>
+        <v-tabs-content id="addowner">
+          <v-card flat style="padding: 50px" v-show="user.type=='NTC'">
+            <v-form v-model="validOwner" ref="addownerform">
+              <v-text-field
+                label="Name"
+                v-model="ownername"
+                :rules="nameRules"
+                :counter="60"
+                required
+              ></v-text-field>
+              <v-text-field
+                label="E-mail"
+                v-model="owneremail"
+                :rules="emailRules"
+                :counter="254"
+                required
+              ></v-text-field>
+              <v-btn
+                @click="submitOwner"
+                :disabled="!validOwner"
+              >
+                Add new Owner to the System
+              </v-btn>
+            </v-form>
+          </v-card>
+        </v-tabs-content>
       </v-tabs-items>
     </v-tabs>
   </div>
@@ -109,6 +138,7 @@ export default {
       token:localStorage.getItem("token"),
       valid: true,
       validDetails: true,
+      validOwner: true,
       message: '',
       password: '',
       oldpassword: '',
@@ -126,7 +156,15 @@ export default {
       contactRules: [
         (v) => !!v || 'Contact number is required',
         (v) => /^[0-9]{10}$/.test(v) || 'The contact number be valid.'
+      ],
+      ownername:'',
+      owneremail:'',
+      emailRules: [
+        (v) => !!v || 'E-mail is required',
+        (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+        (v) => v && v.length <= 254 || 'Email must be less than 254 characters'
       ]
+
     }
   },
   mounted(){
@@ -140,6 +178,32 @@ export default {
           axios({
             method: 'post',
             url: 'http://localhost:3000/passenger/changepass',
+            data: {
+              email: this.user.email,
+              password: this.oldpassword,
+              newpass: this.password,
+              type: "Passenger"
+            },
+            headers: {'Content-Type': 'application/json','Authorization':this.token}
+          }).then((response) => {
+            console.log(response.data);
+            if (!response.data.success) {
+              this.message = response.data.msg;
+            }
+            else {
+              this.message = response.data.msg;
+            }
+          })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+      }
+      else if (this.user.type === "NTC") {
+        if (this.$refs.form.validate()) {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/ntc/changepass',
             data: {
               email: this.user.email,
               password: this.oldpassword,
@@ -187,6 +251,34 @@ export default {
               console.log(error);
             });
         }
+      }
+    },
+    submitOwner(){
+      if (this.$refs.addownerform.validate()) {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/owner/register',
+          data: {
+            id:this.nIC,
+            name: this.name,
+            email:this.email,
+            password:this.password,
+            contact:this.contact
+          },
+          headers: {'Content-Type': 'application/json'}
+        }).then((response)=> {
+          console.log(response.data);
+          if(!response.data.success){
+            this.message=response.data.msg;
+          }
+          else {
+            localStorage.setItem("message",response.data.msg);
+            this.$router.push('/login');
+          }
+        })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     }
   }
