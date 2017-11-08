@@ -5,6 +5,22 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sqlcon = require('./../config/database');
 
+const generator = require('generate-password');
+const nodemailer = require('nodemailer');
+
+let transproter = nodemailer.createTransport({
+    service: 'gmail',
+    secure:false,
+    port:25,
+    auth:{
+        user: 'damitha.15@cse.mrt.ac.lk',
+        pass: 'Need password'
+    },
+    tls:{
+        rejectUnauthorized:false
+    }
+});
+
 
 //Authenticate
 router.post('/authenticate',(req,res,next)=>{
@@ -118,6 +134,59 @@ router.post('/changedetails',passport.authenticate('jwt',{session:false}),(req,r
                 }
             });
         }
+    });
+});
+
+//Register new Operator
+router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    var password = generator.generate({
+        length: 10,
+        numbers: true
+    });
+    // console.log(password);
+    bcrypt.genSalt(10,(err,salt) =>{
+        bcrypt.hash(password,salt,(err,hash) =>{
+            sqlcon.connection.query("SELECT * FROM operator WHERE email=?",[req.body.email], function (error, result, fields) {
+                if (error) {
+                    res.json({success: false, msg: "Failed to register Bus Operator: Connection error."});
+                }else {
+                    if (result.length > 0) {
+                        console.log("Bus Operator already in registered in the system");
+                        res.json({success:false, msg:"Bus Operator already in registered in the system"});
+                    }
+                    else {
+                        sqlcon.connection.query("INSERT INTO operator (email,name,password,contact_no) VALUES (?,?,?,?)",[
+                            req.body.email,
+                            null,
+                            hash,
+                            null
+                        ], function (error, resu, fields) {
+                            if (error)
+                            {
+                                res.json({success: false, msg: "Failed to register Bus Operator:Query Error"});
+                            }
+                            else {
+                                var mailOptions={
+                                    from: 'Damitha <damitha.15@cse.mrt.ac.lk>',
+                                    to: req.body.email,
+                                    subject:'Login Password - BookMySeat',
+                                    text: 'Your password for the Bus Operator account is ' + password
+                                };
+                                transproter.sendMail(mailOptions,function (mailerror,mailres) {
+                                    if(mailerror){
+                                        res.json({success: true, msg: "Bus Operator successfully registered into database but error in sending email"});
+                                    }
+                                    else{
+                                        console.log(req.body.name + " Registered as Operator");
+                                        res.json({success: true, msg: "Bus Operator successfully registered"});
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
     });
 });
 

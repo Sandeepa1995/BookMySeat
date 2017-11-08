@@ -14,7 +14,7 @@ let transproter = nodemailer.createTransport({
     port:25,
     auth:{
         user: 'damitha.15@cse.mrt.ac.lk',
-        pass: 'Need the password here'
+        pass: 'Need password'
     },
     tls:{
         rejectUnauthorized:false
@@ -102,69 +102,57 @@ router.post('/changepass',passport.authenticate('jwt',{session:false}),(req,res,
 });
 
 //Register new Owner
-router.post('/registerowner',(req,res,next)=>{
-    sqlcon.connection.query("SELECT count_owners() as c_owners;",(error, results, fields)=> {
-        if (error)
-        {
-            res.json({success: false, msg: "Failed to register Bus Owner: Connection error."});
-        }
-        else {
-            var id="OWN"+results[0].c_owners.toString();
-            var password = generator.generate({
-                length: 10,
-                numbers: true
-            });
-            // console.log(password);
-            bcrypt.genSalt(10,(err,salt) =>{
-                bcrypt.hash(password,salt,(err,hash) =>{
-                    sqlcon.connection.query("SELECT * FROM owner WHERE email=?",[req.body.email], function (error, result, fields) {
-                        if (error) {
-                            res.json({success: false, msg: "Failed to register Bus Owner: Connection error."});
-                        }else {
-                            if (result.length > 0) {
-                                console.log("Bus Owner already in registered in the system");
-                                res.json({success:false, msg:"Bus Owner already in registered in the system"});
+router.post('/registerowner',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    var password = generator.generate({
+        length: 10,
+        numbers: true
+    });
+    // console.log(password);
+    bcrypt.genSalt(10,(err,salt) =>{
+        bcrypt.hash(password,salt,(err,hash) =>{
+            sqlcon.connection.query("SELECT * FROM owner WHERE email=?",[req.body.email], function (error, result, fields) {
+                if (error) {
+                    res.json({success: false, msg: "Failed to register Bus Owner: Connection error."});
+                }else {
+                    if (result.length > 0) {
+                        console.log("Bus Owner already in registered in the system");
+                        res.json({success:false, msg:"Bus Owner already in registered in the system"});
+                    }
+                    else {
+                        sqlcon.connection.query("INSERT INTO owner (email,name,password,contact_no) VALUES (?,?,?,?)",[
+                            req.body.email,
+                            req.body.name,
+                            hash,
+                            null
+                        ], function (error, resu, fields) {
+                            if (error)
+                            {
+                                res.json({success: false, msg: "Failed to register BUs Owner:Query Error"});
                             }
                             else {
-                                sqlcon.connection.query("INSERT INTO owner VALUES (?,?,?,?,?)",[
-                                    id,
-                                    req.body.email,
-                                    req.body.name,
-                                    hash,
-                                    null
-                                ], function (error, resu, fields) {
-                                    if (error)
-                                    {
-                                        res.json({success: false, msg: "Failed to register BUs Owner:Query Error"});
+                                var mailOptions={
+                                    from: 'Damitha <damitha.15@cse.mrt.ac.lk>',
+                                    to: req.body.email,
+                                    subject:'Login Password - BookMySeat',
+                                    text: 'Your password for the Bus Owner account is ' + password
+                                };
+                                transproter.sendMail(mailOptions,function (mailerror,mailres) {
+                                    if(mailerror){
+                                        res.json({success: true, msg: "Bus Owner successfully registered into database but error in sending email"});
                                     }
-                                    else {
-
-                                        var mailOptions={
-                                            from: 'Damitha <damitha.15@cse.mrt.ac.lk>',
-                                            to: req.body.email,
-                                            subject:'Login Password - BookMySeat',
-                                            text: 'Your password for the Bus Owner account is ' + password
-                                        };
-
-                                        transproter.sendMail(mailOptions,function (mailerror,mailres) {
-                                            if(mailerror){
-                                                res.json({success: true, msg: "Bus Owner successfully registered into database but error in sending email"});
-                                            }
-                                            else{
-                                                console.log(req.body.name + " Registered as Owner");
-                                                res.json({success: true, msg: "Bus Owner successfully registered"});
-                                            }
-                                        });
-                                        // console.log(req.body.name + " Registered as Owner");
-                                        // res.json({success: true, msg: "Bus Owner successfully registered"});
+                                    else{
+                                        console.log(req.body.name + " Registered as Owner");
+                                        res.json({success: true, msg: "Bus Owner successfully registered"});
                                     }
                                 });
+                                // console.log(req.body.name + " Registered as Owner");
+                                // res.json({success: true, msg: "Bus Owner successfully registered"});
                             }
-                        }
-                    });
-                });
+                        });
+                    }
+                }
             });
-        }
+        });
     });
 });
 

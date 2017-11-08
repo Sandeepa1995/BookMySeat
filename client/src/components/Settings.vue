@@ -122,6 +122,25 @@
             </v-form>
           </v-card>
         </v-tabs-content>
+        <v-tabs-content id="addoperator">
+          <v-card flat style="padding: 50px" v-show="user.type=='Bus Owner'">
+            <v-form v-model="validOperator" ref="addoperatorform">
+              <v-text-field
+                label="E-mail"
+                v-model="operatoremail"
+                :rules="emailRules"
+                :counter="254"
+                required
+              ></v-text-field>
+              <v-btn
+                @click="submitOperator"
+                :disabled="!validOperator"
+              >
+                Add new Bus Operator to the System
+              </v-btn>
+            </v-form>
+          </v-card>
+        </v-tabs-content>
       </v-tabs-items>
     </v-tabs>
   </div>
@@ -138,6 +157,7 @@ export default {
       valid: true,
       validDetails: true,
       validOwner: true,
+      validOperator: true,
       message: '',
       password: '',
       oldpassword: '',
@@ -162,7 +182,8 @@ export default {
         (v) => !!v || 'E-mail is required',
         (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
         (v) => v && v.length <= 254 || 'Email must be less than 254 characters'
-      ]
+      ],
+      operatoremail:''
 
     }
   },
@@ -312,7 +333,30 @@ export default {
             name: this.ownername,
             email:this.owneremail
           },
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/json','Authorization':this.token}
+        }).then((response)=> {
+          console.log(response.data);
+          if(!response.data.success){
+            this.message=response.data.msg;
+          }
+          else {
+            this.message=response.data.msg;
+          }
+        })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    },
+    submitOperator(){
+      if (this.$refs.addoperatorform.validate()) {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/owner/registeroperator',
+          data: {
+            email:this.operatoremail
+          },
+          headers: {'Content-Type': 'application/json','Authorization':this.token}
         }).then((response)=> {
           console.log(response.data);
           if(!response.data.success){
