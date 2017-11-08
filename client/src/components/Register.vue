@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <h3>{{ title }}</h3>
+    <h4>{{ title }}</h4>
     <v-alert color="error" icon="warning" transition="scale-transition" value="true" v-show="message.length>0">
       {{message}}
     </v-alert>
@@ -71,7 +71,7 @@
 export default {
   name: 'register',
   data: () => ({
-    title: 'Register to BookMySeat',
+    title: 'Register to BookMySeat as a Passenger',
     valid: true,
     message: '',
     name: '',

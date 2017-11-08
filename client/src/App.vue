@@ -17,6 +17,7 @@
       <v-toolbar-side-icon
       @click.native="sideNav=!sideNav"
       class="hidden-sm-and-up"></v-toolbar-side-icon>
+      <v-icon dark style="padding-left: 20px">event_seat</v-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">{{title}}</router-link>
       </v-toolbar-title>
@@ -67,12 +68,12 @@
     computed:{
       menuItems(){
         let menuItems = [
-          {icon:"supervisor_account", title:"Register",link:'/register'},
+          {icon:"supervisor_account", title:"Register",link:'/register'},   //Logged out nav components
           {icon:"lock_open", title:"Sign In",link:'/login'}
         ];
         if(localStorage.getItem("user")){
           menuItems = [
-            {icon:"settings", title:"Settings", link:'/'}
+            {icon:"settings", title:"Options", link:'/settings'}     //Logged in nav components
           ]
         }
         return menuItems

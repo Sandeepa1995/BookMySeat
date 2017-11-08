@@ -53,7 +53,8 @@ export default {
     items: [
       { text: 'Passenger' },
       { text: 'Bus Operator' },
-      { text: 'Bus Company' }
+      { text: 'Bus Company' },
+      { text: 'NTC' }
     ],
     passedmessage:'',
     email: '',

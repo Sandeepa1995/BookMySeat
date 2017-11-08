@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const sqlcon = require('./config/database');
+// const bcrypt = require('bcryptjs');
+
 
 const app=express();
 
@@ -58,3 +60,20 @@ app.get('*',(req,res)=>{
 app.listen(port,()=>{
     console.log("Server started on "+port);
 });
+
+// bcrypt.genSalt(10,function (err,salt) {
+//     bcrypt.hash("password",salt,(err,hash) =>{
+//         sqlcon.connection.query("INSERT INTO ntc VALUES (?,?)",[
+//             "ntc@gov.lk",
+//             hash
+//         ], function (error, results, fields) {
+//             if (error)
+//             {
+//                 console.log("Error");
+//             }
+//             else {
+//                 console.log("Success");
+//             }
+//         });
+//     });
+// });
