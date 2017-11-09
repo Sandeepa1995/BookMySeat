@@ -1,9 +1,33 @@
-create table passenger
-	(passenger_id		varchar(13),
-	 email		        varchar(254),
-	 name	            varchar(60),
-	 password	        varchar(60),
-	 contact_no	        varchar(10),
-	 primary key 	    (passenger_id)
-	);
+CREATE TABLE passenger
+  (passenger_id     	varchar(13),
+   email            	varchar(254)NOT NULL,
+   name              	varchar(60)NOT NULL,
+   password          	varchar(60)NOT NULL,
+   contact_no        	varchar(10)NOT NULL,
+   PRIMARY KEY       	(passenger_id)
+  );
 
+CREATE TABLE ntc
+  (email            	varchar(254)NOT NULL,
+   password          	varchar(60)NOT NULL,
+   contact_no        	varchar(10)NOT NULL,
+   PRIMARY KEY       	(email)
+  );
+
+CREATE TABLE owner
+  (owner_id     		int AUTO_INCREMENT,
+   email            	varchar(254)NOT NULL,
+   name              	varchar(60)NOT NULL,
+   password          	varchar(60)NOT NULL,
+   contact_no        	varchar(10),
+   PRIMARY KEY       	(owner_id)
+  );
+
+CREATE TABLE operator
+  (operator_id     	int AUTO_INCREMENT,
+   email            	varchar(254)NOT NULL,
+   name              	varchar(60),
+   password          	varchar(60)NOT NULL,
+   contact_no        	varchar(10),
+   PRIMARY KEY       	(operator_id)
+  );

@@ -4,6 +4,9 @@ import Home from '@/components/Home'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import Settings from '@/components/Settings'
+import SearchBus from '@/components/SearchBus'
+import Results from '@/components/Results'
+import AddTrips from '@/components/AddTrips'
 
 Vue.use(Router)
 
@@ -29,6 +32,21 @@ export default new Router({
       path: '/settings',
       name: 'Settings',
       component: Settings
+    },
+    {
+      path: '/searchBus',
+      name: 'SearchBus',
+      component: SearchBus
+    },
+    {
+      path: '/results',
+      name: 'Results',
+      component: Results
+    },
+    {
+      path: '/addtrips',
+      name: 'AddTrips',
+      component: AddTrips
     }
   ]
 })

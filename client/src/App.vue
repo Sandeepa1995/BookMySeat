@@ -68,13 +68,25 @@
     computed:{
       menuItems(){
         let menuItems = [
+          {icon: 'search', title: 'Search Buses',link: '/searchBus'},
           {icon:"supervisor_account", title:"Register",link:'/register'},   //Logged out nav components
           {icon:"lock_open", title:"Sign In",link:'/login'}
         ];
         if(localStorage.getItem("user")){
-          menuItems = [
-            {icon:"settings", title:"Options", link:'/settings'}     //Logged in nav components
-          ]
+          var user=JSON.parse(localStorage.getItem("user"));
+          if (user.type==="Bus Owner") {
+            menuItems = [
+              {icon: 'search', title: 'Search Buses',link: '/searchBus'},
+              {icon: 'input', title: 'Add Trips',link: '/addtrips'},
+              {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
+            ]
+          }
+          else{
+            menuItems = [
+              {icon: 'search', title: 'Search Buses',link: '/searchBus'},
+              {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
+            ]
+          }
         }
         return menuItems
       },
