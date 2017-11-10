@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const sqlcon = require('./config/database');
-// const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 
 const app=express();
@@ -81,3 +81,4 @@ app.listen(port,()=>{
 //         });
 //     });
 // });
+
