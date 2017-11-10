@@ -13,8 +13,8 @@ let transproter = nodemailer.createTransport({
     secure:false,
     port:25,
     auth:{
-        user: 'damitha.15@cse.mrt.ac.lk',
-        pass: 'Need password'
+        user: 'bookmyseat.15@gmail.com',
+        pass: 'BookMySeat25'
     },
     tls:{
         rejectUnauthorized:false
@@ -167,7 +167,7 @@ router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(re
                             }
                             else {
                                 var mailOptions={
-                                    from: 'Damitha <damitha.15@cse.mrt.ac.lk>',
+                                    from: 'BookMySeat <bookmyseat.15@gmail.com>',
                                     to: req.body.email,
                                     subject:'Login Password - BookMySeat',
                                     text: 'Your password for the Bus Operator account is ' + password
