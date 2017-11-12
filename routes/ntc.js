@@ -14,7 +14,7 @@ let transproter = nodemailer.createTransport({
     port:25,
     auth:{
         user: 'bookmyseat.15@gmail.com',
-        pass: 'BookMySeat25'
+        pass: ''
     },
     tls:{
         rejectUnauthorized:false
