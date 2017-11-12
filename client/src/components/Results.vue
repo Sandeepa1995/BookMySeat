@@ -8,7 +8,7 @@
         v-for ="trip in Trips"
         :key = "trip.id">
         <v-layout row>
-          <v-flex md3>
+          <v-flex md4>
             <v-card-title primary-title>
               <div>
                 <h6 class="mb-0 mt-0">{{trip.route}} {{trip.start}} - {{trip.end}}</h6>
@@ -22,7 +22,15 @@
           <v-flex md3 v-show="user.type=='Passenger' || user.type=='Bus Operator'">
             <v-spacer></v-spacer>
             <v-card-actions>
-              <v-btn outline flat color="blue" class="mt-2 ml-3">Reserve</v-btn>
+              <v-btn
+                outline
+                flat
+                color="blue"
+                class="mt-2 ml-3"
+                v-on:click="makeReservation(trip.id,trip.license,trip.route,trip.start,trip.end,trip.time,trip.type,trip.seats)"
+               >
+                Reserve
+              </v-btn>
             </v-card-actions>
           </v-flex>
         </v-layout>
@@ -53,7 +61,16 @@
     user: null,
     data() {
       return {
-        Trips: []
+        Trips: [],
+        selectedTrip: {
+          route: '',
+          license: '',
+          start: '',
+          end: '',
+          time: '',
+          type: '',
+          seats: ''
+        }
       }
     },
     mounted () {
@@ -65,7 +82,17 @@
 //
     },
     methods: {
-
+      makeReservation(id,license,route,start,end,time,type,seats) {
+        this.selectedTrip.route = route;
+        this.selectedTrip.license = license;
+        this.selectedTrip.start = start;
+        this.selectedTrip.end = end;
+        this.selectedTrip.time = time;
+        this.selectedTrip.type = type;
+        this.selectedTrip.seats = seats;
+        localStorage.setItem('selectedVal',JSON.stringify(this.selectedTrip));
+        this.$router.push('/reservation/' +id);
+      }
     }
   }
 </script>

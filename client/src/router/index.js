@@ -7,6 +7,7 @@ import Settings from '@/components/Settings'
 import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
+import Reservation from '@/components/Reservation'
 
 Vue.use(Router)
 
@@ -47,6 +48,11 @@ export default new Router({
       path: '/addtrips',
       name: 'AddTrips',
       component: AddTrips
+    },
+    {
+      path: '/reservation/:id',
+      name: 'Reservation',
+      component: Reservation
     }
   ]
 })

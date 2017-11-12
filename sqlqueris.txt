@@ -43,3 +43,14 @@ CREATE TABLE trips (
   seats int,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE booking_details (
+    reservation_ID int NOT NULL AUTO_INCREMENT,
+    booker_ID varchar(255),
+    bus_license varchar(255),
+    route varchar(255),
+    start_time time,
+    seat_no varchar(255),
+    date date,
+    PRIMARY KEY (reservation_ID)
+);
