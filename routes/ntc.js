@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sqlcon = require('./../config/database');
+const config = require('./../../config.json');
 
 const generator = require('generate-password');
 const nodemailer = require('nodemailer');
@@ -13,8 +14,8 @@ let transproter = nodemailer.createTransport({
     secure:false,
     port:25,
     auth:{
-        user: 'bookmyseat.15@gmail.com',
-        pass: ''
+        user: config.user,
+        pass: config.pass
     },
     tls:{
         rejectUnauthorized:false
