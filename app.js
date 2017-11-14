@@ -5,6 +5,7 @@ const cors = require('cors');
 const passport = require('passport');
 const sqlcon = require('./config/database');
 const bcrypt = require('bcryptjs');
+const config = require('./../config.json');
 
 
 const app=express();
@@ -69,16 +70,12 @@ app.listen(port,()=>{
     console.log("Server started on "+port);
 });
 
-// bcrypt.genSalt(10,function (err,salt) {
-//     bcrypt.hash("password",salt,(err,hash) =>{
-//         sqlcon.connection.query("INSERT INTO ntc VALUES (?,?,?)",[
-//             "ntc@gov.lk",
-//             hash,
-//             "0112587372"
-//         ], function (error, results, fields) {
-//             if (error) throw  error;
-//             console.log("Success");
-//         });
-//     });
+// sqlcon.connection.query("INSERT INTO ntc VALUES (?,AES_ENCRYPT(?,?),?)",[
+//     "ntc@gov.lk",
+//     "password",
+//     config.secret,
+//     "0112587372"
+// ], function (error, results, fields) {
+//     if (error) throw  error;
+//     console.log("Success");
 // });
-

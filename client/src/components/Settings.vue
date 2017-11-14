@@ -63,7 +63,7 @@
                 v-model="oldpassword"
                 ref="oldpassword"
                 :rules="pWRules"
-                :counter="60"
+                :counter="15"
                 type="password"
                 required
               ></v-text-field>
@@ -72,7 +72,7 @@
                 v-model="password"
                 ref="password"
                 :rules="pWRules"
-                :counter="60"
+                :counter="15"
                 type="password"
                 required
               ></v-text-field>
@@ -80,7 +80,7 @@
                 label="Confirm New Password"
                 v-model="confirmedPW"
                 ref="confirmedPW"
-                :counter="60"
+                v-bind:counter="password.length"
                 :rules="[() => !!confirmedPW || 'Please confirm the password entered above',
                 () => confirmedPW==password || 'The entered passwords do not match'
                 ]"
@@ -164,7 +164,7 @@ export default {
       confirmedPW:'',
       pWRules: [
         (v) => !!v || 'Password is required',
-        (v) => v && v.length <= 60 || 'Password must be less than 60 characters'
+        (v) => v && v.length <= 15 || 'Password must be less than 60 characters'
       ],
       name: '',
       nameRules: [
