@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-import Register from '@/components/Register'
-import Login from '@/components/Login'
-import Settings from '@/components/Settings'
+import Home from '@/components/Common/Home'
+import Register from '@/components/Passenger/Register'
+import Login from '@/components/Common/Login'
+import Settings from '@/components/Common/Settings'
 import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
+import ManageBusOwner from '@/components/Owner/ManageBusOwner'
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   mode:'history',
@@ -47,6 +48,11 @@ export default new Router({
       path: '/addtrips',
       name: 'AddTrips',
       component: AddTrips
+    },
+    {
+      path: '/managebus_owner',
+      name: 'ManageBusOwner',
+      component: ManageBusOwner
     }
   ]
 })
