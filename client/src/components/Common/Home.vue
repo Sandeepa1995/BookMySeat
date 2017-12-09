@@ -4,8 +4,8 @@
     <h4>Be hip, and book a seat for your trip!</h4>
 
     <!--Seat selector starts here-->
-    <div class="container" style="border: 10px solid; padding-top: 50px" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +95)+ 'px', height:  ((r_rows+1)*50 +125)+ 'px' }">
-      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px' }">
+    <div class="container" style="border: 10px solid; padding-top: 40px;" v-bind:style="{ width:  ((l_seats+1+r_seats)*40 +95)+ 'px', height:  ((r_rows+1)*40 +125)+ 'px' }">
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*40 +35)+ 'px' }">
         <div class="sideRow">
           <div v-for="y in (l_rows)">
             <label class="fullSeats" v-for="x in (l_seats)" style="float: left"
@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px'}">
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*40 +35)+ 'px'}">
         <div class="sideRow">
           <div v-for="y in Array.from(new Array((r_rows-l_rows)), (x,i) => i + l_rows+1)">
             <label class="emptySeats" v-for="x in (l_seats+1)" style="float: left"></label>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px' }">
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*40 +35)+ 'px' }">
         <div class="backRow">
           <label v-for="x in (l_seats+1+r_seats)" style="float: left; margin:auto"
                  v-bind:class="{selectedSeat:checkbox.indexOf(getSeat(x,r_rows+1)) >= 0,unavailableSeat:booked.indexOf(getSeat(x,r_rows+1)) >= 0}">
@@ -108,20 +108,20 @@ a {
   }
 
 .backRow label {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   outline: 1px solid;
 }
 
 .sideRow div .fullSeats {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   outline: 1px solid;
 }
 
 .sideRow div .emptySeats {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
 }
 
 .selectedSeat{

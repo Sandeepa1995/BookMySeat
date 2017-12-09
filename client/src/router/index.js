@@ -57,7 +57,7 @@ export default new Router({
       component: AddTrips
     },
     {
-      path: '/managebus_owner',
+      path: '/owner/managebus',
       name: 'ManageBusOwner',
       component: ManageBusOwner
     },
