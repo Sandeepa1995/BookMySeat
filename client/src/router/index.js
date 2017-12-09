@@ -9,6 +9,13 @@ import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
 import ManageBusOwner from '@/components/Owner/ManageBusOwner'
 
+//Routes
+import RoutesHome from '../components/Routes/RoutesHome.vue'
+import NewRoute from '../components/Routes/NewRoute.vue'
+import SearchRoutes from '../components/Routes/SearchRoutes.vue'
+import SearchResults from '../components/Routes/SearchResults.vue'
+import EditRoute from '../components/Routes/EditRoute.vue'
+
 Vue.use(Router);
 
 export default new Router({
@@ -53,6 +60,31 @@ export default new Router({
       path: '/managebus_owner',
       name: 'ManageBusOwner',
       component: ManageBusOwner
+    },
+    {
+      path: '/routes',
+      name: 'RoutesHome',
+      component: RoutesHome
+    },
+    {
+      path: '/routes/new',
+      name: 'NewRoute',
+      component: NewRoute
+    },
+    {
+      path: '/routes/search',
+      name: 'SearchRoutes',
+      component: SearchRoutes
+    },
+    {
+      path: '/routes/search/results',
+      name: 'SearchResults',
+      component: SearchResults
+    },
+    {
+      path: '/routes/:id/edit',
+      name: 'EditRoute',
+      component: EditRoute
     }
   ]
 })
