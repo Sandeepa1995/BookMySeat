@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sqlcon = require('./../config/database');
+const config = require('./../../config.json');
 
 const generator = require('generate-password');
 const nodemailer = require('nodemailer');
@@ -13,8 +14,8 @@ let transproter = nodemailer.createTransport({
     secure:false,
     port:25,
     auth:{
-        user: 'bookmyseat.15@gmail.com',
-        pass: 'BookMySeat25'
+        user: config.user,
+        pass: config.pass
     },
     tls:{
         rejectUnauthorized:false
@@ -35,21 +36,26 @@ router.post('/authenticate',(req,res,next)=>{
             return res.json({success:false,msg:"Bus Owner not registered in the system"})
         }
         else{
-            // console.log(results[0]);
-            bcrypt.compare(password, results[0].password,(err,isMatch)=>{
-                if(err){
-                    return res.json({success:false,msg:"Error"})
+            sqlcon.connection.query("SELECT compare_ownerpassword(?,?) AS res;",[
+                email,
+                password
+            ], (error, result, fields)=> {
+                if (error)
+                {
+                    res.json({success: false, msg: "Query Error"});
                 }
-                if (isMatch){
-                    const token = jwt.sign({data:results[0],type:"Owner"},"BookMySeatSecret",{
-                        expiresIn: 604800 //1 week
-                    });
+                else {
+                    if (result[0].res===1){
+                        const token = jwt.sign({data:results[0],type:"Owner"},"BookMySeatSecret",{
+                            expiresIn: 604800 //1 week
+                        });
 
-                    return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Owner",contact:results[0].contact_no}})
-                    // return res.json({success:true,token:'JWT '+token,user:results[0]})
-                }
-                else{
-                    return res.json({success:false,msg:"Incorrect Password"})
+                        return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Owner",contact:results[0].contact_no}})
+                        // return res.json({success:true,token:'JWT '+token,user:results[0]})
+                    }
+                    else{
+                        return res.json({success:false,msg:"Incorrect Password"});
+                    }
                 }
             });
         }
@@ -71,31 +77,33 @@ router.post('/changepass',passport.authenticate('jwt',{session:false}),(req,res,
         }
         else{
             // console.log(results[0]);
-            bcrypt.compare(password, results[0].password,(err,isMatch)=>{
-                if(err){
-                    return res.json({success:false,msg:"Error"})
+            sqlcon.connection.query("SELECT compare_ownerpassword(?,?) AS res;",[
+                email,
+                password
+            ], (error, result, fields)=> {
+                if (error)
+                {
+                    return res.json({success:false,msg:"Error"});
                 }
-                if (isMatch){
-                    bcrypt.genSalt(10,function (err,salt) {
-                        bcrypt.hash(newPass,salt,(err,hash) =>{
-                            sqlcon.connection.query("UPDATE owner SET password=? WHERE email=?",[
-                                hash,
-                                email
-                            ], function (error, results, fields) {
-                                if (error)
-                                {
-                                    res.json({success: false, msg: "Failed to update Bus Owner:Query Error"});
-                                }
-                                else {
-                                    // console.log(results[0].name + " Changed Password");
-                                    res.json({success: true, msg: "Password successfully changed"});
-                                }
-                            });
+                else {
+                    if (result[0].res===1){
+                        sqlcon.connection.query("UPDATE owner SET password=AES_ENCRYPT(?,?) WHERE email=?",[
+                            newPass,
+                            config.secret,
+                            email
+                        ], function (error, results, fields) {
+                            if (error)
+                            {
+                                res.json({success: false, msg: "Failed to update Bus Owner:Query Error"});
+                            }
+                            else {
+                                res.json({success: true, msg: "Password successfully changed"});
+                            }
                         });
-                    });
-                }
-                else{
-                    return res.json({success:false,msg:"Incorrect Old Password"})
+                    }
+                    else{
+                        return res.json({success:false,msg:"Incorrect Old Password"});
+                    }
                 }
             });
         }
@@ -140,53 +148,49 @@ router.post('/changedetails',passport.authenticate('jwt',{session:false}),(req,r
 //Register new Operator
 router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
     var password = generator.generate({
-        length: 10,
+        length: 15,
         numbers: true
     });
-    // console.log(password);
-    bcrypt.genSalt(10,(err,salt) =>{
-        bcrypt.hash(password,salt,(err,hash) =>{
-            sqlcon.connection.query("SELECT * FROM operator WHERE email=?",[req.body.email], function (error, result, fields) {
-                if (error) {
-                    res.json({success: false, msg: "Failed to register Bus Operator: Connection error."});
-                }else {
-                    if (result.length > 0) {
-                        console.log("Bus Operator already in registered in the system");
-                        res.json({success:false, msg:"Bus Operator already in registered in the system"});
+    sqlcon.connection.query("SELECT * FROM operator WHERE email=?",[req.body.email], function (error, result, fields) {
+        if (error) {
+            res.json({success: false, msg: "Failed to register Bus Operator: Connection error."});
+        }else {
+            if (result.length > 0) {
+                console.log("Bus Operator already in registered in the system");
+                res.json({success:false, msg:"Bus Operator already in registered in the system"});
+            }
+            else {
+                sqlcon.connection.query("INSERT INTO operator (email,name,password,contact_no) VALUES (?,?,AES_ENCRYPT(?,?),?)",[
+                    req.body.email,
+                    null,
+                    password,
+                    config.secret,
+                    null
+                ], function (error, resu, fields) {
+                    if (error)
+                    {
+                        res.json({success: false, msg: "Failed to register Bus Operator:Query Error"});
                     }
                     else {
-                        sqlcon.connection.query("INSERT INTO operator (email,name,password,contact_no) VALUES (?,?,?,?)",[
-                            req.body.email,
-                            null,
-                            hash,
-                            null
-                        ], function (error, resu, fields) {
-                            if (error)
-                            {
-                                res.json({success: false, msg: "Failed to register Bus Operator:Query Error"});
+                        var mailOptions={
+                            from: 'BookMySeat <bookmyseat.15@gmail.com>',
+                            to: req.body.email,
+                            subject:'Login Password - BookMySeat',
+                            text: 'Your password for the Bus Operator account is ' + password
+                        };
+                        transproter.sendMail(mailOptions,function (mailerror,mailres) {
+                            if(mailerror){
+                                res.json({success: true, msg: "Bus Operator successfully registered into database but error in sending email"});
                             }
-                            else {
-                                var mailOptions={
-                                    from: 'BookMySeat <bookmyseat.15@gmail.com>',
-                                    to: req.body.email,
-                                    subject:'Login Password - BookMySeat',
-                                    text: 'Your password for the Bus Operator account is ' + password
-                                };
-                                transproter.sendMail(mailOptions,function (mailerror,mailres) {
-                                    if(mailerror){
-                                        res.json({success: true, msg: "Bus Operator successfully registered into database but error in sending email"});
-                                    }
-                                    else{
-                                        console.log(req.body.name + " Registered as Operator");
-                                        res.json({success: true, msg: "Bus Operator successfully registered"});
-                                    }
-                                });
+                            else{
+                                console.log(req.body.name + " Registered as Operator");
+                                res.json({success: true, msg: "Bus Operator successfully registered"});
                             }
                         });
                     }
-                }
-            });
-        });
+                });
+            }
+        }
     });
 });
 

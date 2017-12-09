@@ -1,0 +1,134 @@
+<template>
+  <div class="home">
+    <h2>{{ msg }}</h2>
+    <h4>Be hip, and book a seat for your trip!</h4>
+
+    <!--Seat selector starts here-->
+    <div class="container" style="border: 10px solid; padding-top: 50px" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +95)+ 'px', height:  ((r_rows+1)*50 +125)+ 'px' }">
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px' }">
+        <div class="sideRow">
+          <div v-for="y in (l_rows)">
+            <label class="fullSeats" v-for="x in (l_seats)" style="float: left"
+                   v-bind:class="{selectedSeat:checkbox.indexOf(getSeat(x,y)) >= 0,unavailableSeat:booked.indexOf(getSeat(x,y)) >= 0}">
+              <input type="checkbox" :value="getSeat(x,y)" v-model="checkbox" v-show="false"
+                     :disabled="(booked.indexOf(getSeat(x,y)) >= 0)">
+            </label>
+            <label class="emptySeats" style="float: left"></label>
+            <label class="fullSeats" v-for="x in r_seats" style="float: left"
+                   v-bind:class="{selectedSeat:checkbox.indexOf(getSeat(x+l_seats,y)) >= 0,unavailableSeat:booked.indexOf(getSeat(x+l_seats,y)) >= 0}">
+              <input type="checkbox" :value="getSeat(x+l_seats,y)" v-model="checkbox" v-show="false"
+                     :disabled="(booked.indexOf(getSeat(x+l_seats,y)) >= 0)">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px'}">
+        <div class="sideRow">
+          <div v-for="y in Array.from(new Array((r_rows-l_rows)), (x,i) => i + l_rows+1)">
+            <label class="emptySeats" v-for="x in (l_seats+1)" style="float: left"></label>
+            <label class="fullSeats" v-for="x in r_seats" style="float: left"
+                   v-bind:class="{selectedSeat:checkbox.indexOf(getSeat(x,y)) >= 0,unavailableSeat:booked.indexOf(getSeat(x,y)) >= 0}">
+              <input type="checkbox" :value="getSeat(x,y)" v-model="checkbox" v-show="false"
+                     :disabled="(booked.indexOf(getSeat(x,y)) >= 0)">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="container" v-bind:style="{ width:  ((l_seats+1+r_seats)*50 +35)+ 'px' }">
+        <div class="backRow">
+          <label v-for="x in (l_seats+1+r_seats)" style="float: left; margin:auto"
+                 v-bind:class="{selectedSeat:checkbox.indexOf(getSeat(x,r_rows+1)) >= 0,unavailableSeat:booked.indexOf(getSeat(x,r_rows+1)) >= 0}">
+              <input type="checkbox" :value="getSeat(x,r_rows+1)" v-model="checkbox" v-show="false"
+                     :disabled="(booked.indexOf(getSeat(x,r_rows+1)) >= 0)">
+          </label>
+        </div>
+      </div>
+    </div>
+    <!--Ends here-->
+
+    {{checkbox}}
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'home',
+  data () {
+    return {
+      msg: 'Welcome to BookMySeat',
+
+//    For bus seat management
+      r_rows:10,
+      l_rows:8,
+      r_seats:2,
+      l_seats:2,
+      checkbox: [],
+      booked:[1,22,32,41]
+    }
+  },
+  methods:{
+    //For bus seat management
+    getSeat(x,y){
+      if (y<=this.l_rows){
+        return (y-1)*(this.l_seats+this.r_seats)+x;
+      }
+      else if (y<=this.r_rows){
+        return (this.l_rows)*(this.l_seats)+(y-1)*(this.r_seats)+x;
+      }
+      else{
+        return (this.l_rows)*(this.l_seats)+(this.r_rows)*(this.r_seats)+x;
+      }
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1, h2 {
+  font-weight: normal;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+a {
+  color: #42b983;
+}
+
+  .home{
+    text-align: center;
+  }
+
+.backRow label {
+  width: 50px;
+  height: 50px;
+  outline: 1px solid;
+}
+
+.sideRow div .fullSeats {
+  width: 50px;
+  height: 50px;
+  outline: 1px solid;
+}
+
+.sideRow div .emptySeats {
+  width: 50px;
+  height: 50px;
+}
+
+.selectedSeat{
+   background-color: green;
+ }
+
+.unavailableSeat{
+  background-color: red;
+}
+</style>

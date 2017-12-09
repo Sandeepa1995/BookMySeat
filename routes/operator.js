@@ -4,6 +4,8 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sqlcon = require('./../config/database');
+const config = require('./../../config.json');
+
 
 //Authenticate
 router.post('/authenticate',(req,res,next)=>{
@@ -19,20 +21,26 @@ router.post('/authenticate',(req,res,next)=>{
         }
         else{
             // console.log(results[0]);
-            bcrypt.compare(password, results[0].password,(err,isMatch)=>{
-                if(err){
-                    return res.json({success:false,msg:"Error"})
+            sqlcon.connection.query("SELECT compare_operpassword(?,?) AS res;",[
+                email,
+                password
+            ], (error, result, fields)=> {
+                if (error)
+                {
+                    res.json({success: false, msg: "Query Error"});
                 }
-                if (isMatch){
-                    const token = jwt.sign({data:results[0],type:"Operator"},"BookMySeatSecret",{
-                        expiresIn: 604800 //1 week
-                    });
+                else {
+                    if (result[0].res===1){
+                        const token = jwt.sign({data:results[0],type:"Operator"},"BookMySeatSecret",{
+                            expiresIn: 604800 //1 week
+                        });
 
-                    return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Operator",contact:results[0].contact_no}})
-                    // return res.json({success:true,token:'JWT '+token,user:results[0]})
-                }
-                else{
-                    return res.json({success:false,msg:"Incorrect Password"})
+                        return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Operator",contact:results[0].contact_no}})
+                        // return res.json({success:true,token:'JWT '+token,user:results[0]})
+                    }
+                    else{
+                        return res.json({success:false,msg:"Incorrect Password"});
+                    }
                 }
             });
         }
@@ -53,32 +61,33 @@ router.post('/changepass',passport.authenticate('jwt',{session:false}),(req,res,
             return res.json({success:false,msg:"Bus Operator not registered in the system"})
         }
         else{
-            // console.log(results[0]);
-            bcrypt.compare(password, results[0].password,(err,isMatch)=>{
-                if(err){
-                    return res.json({success:false,msg:"Error"})
+            sqlcon.connection.query("SELECT compare_operpassword(?,?) AS res;",[
+                email,
+                password
+            ], (error, result, fields)=> {
+                if (error)
+                {
+                    return res.json({success:false,msg:"Error"});
                 }
-                if (isMatch){
-                    bcrypt.genSalt(10,function (err,salt) {
-                        bcrypt.hash(newPass,salt,(err,hash) =>{
-                            sqlcon.connection.query("UPDATE operator SET password=? WHERE email=?",[
-                                hash,
-                                email
-                            ], function (error, results, fields) {
-                                if (error)
-                                {
-                                    res.json({success: false, msg: "Failed to update Bus Operator:Query Error"});
-                                }
-                                else {
-                                    // console.log(results[0].name + " Changed Password");
-                                    res.json({success: true, msg: "Password successfully changed"});
-                                }
-                            });
+                else {
+                    if (result[0].res===1){
+                        sqlcon.connection.query("UPDATE operator SET password=AES_ENCRYPT(?,?) WHERE email=?",[
+                            newPass,
+                            config.secret,
+                            email
+                        ], function (error, results, fields) {
+                            if (error)
+                            {
+                                res.json({success: false, msg: "Failed to update Bus Operator:Query Error"});
+                            }
+                            else {
+                                res.json({success: true, msg: "Password successfully changed"});
+                            }
                         });
-                    });
-                }
-                else{
-                    return res.json({success:false,msg:"Incorrect Old Password"})
+                    }
+                    else{
+                        return res.json({success:false,msg:"Incorrect Old Password"});
+                    }
                 }
             });
         }
