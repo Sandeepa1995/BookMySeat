@@ -114,7 +114,8 @@
           url: 'http://localhost:3000/common/search',
           data: {
             searchValue1: this.searchValue1,
-            searchValue2: this.searchValue2
+            searchValue2: this.searchValue2,
+            date: this.date
           },
           headers: {'Content-Type':'application/json'}
         }).then((res) => {

@@ -45,7 +45,7 @@
             Bus type: {{trip.type}}
           </v-flex>
           <v-flex md3 class="ml-2">
-            Available seats: {{trip.seats}}
+            Available seats: {{trip.seats-trip.bookings}} / {{trip.seats}}
           </v-flex>
         </v-layout>
 
@@ -63,6 +63,7 @@
       return {
         Trips: [],
         selectedTrip: {
+          id: '',
           route: '',
           license: '',
           start: '',
@@ -83,6 +84,7 @@
     },
     methods: {
       makeReservation(id,license,route,start,end,time,type,seats) {
+        this.selectedTrip.id = id;
         this.selectedTrip.route = route;
         this.selectedTrip.license = license;
         this.selectedTrip.start = start;
