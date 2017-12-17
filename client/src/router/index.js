@@ -8,6 +8,7 @@ import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
 import ManageBusOwner from '@/components/Owner/ManageBusOwner'
+import Reservation from '@/components/Reservation'
 
 Vue.use(Router);
 
@@ -53,6 +54,11 @@ export default new Router({
       path: '/managebus_owner',
       name: 'ManageBusOwner',
       component: ManageBusOwner
+    },
+    {
+      path: '/reservation/:id',
+      name: 'Reservation',
+      component: Reservation
     }
   ]
 })

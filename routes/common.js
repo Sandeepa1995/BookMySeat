@@ -32,8 +32,8 @@ router.post('/search', (req,res,next) => {
     const date = req.body.date;
     var searchQuery = "SELECT id,license,route,start,end,time_format(time,'%h:%i %p') time,type,seats,bookings "
                     + "FROM (SELECT * FROM trips where start LIKE ? and end LIKE ? ) as x "
-                    + "LEFT JOIN (SELECT trip_ID, count(*) as bookings FROM booking_details WHERE date = ? GROUP BY bus_license) as y "
-                    + "ON id = trip_ID ORDER BY time;";
+                    + "LEFT JOIN (SELECT trip_ID, count(*) as bookings FROM booking_details WHERE date = ? GROUP BY bus_license,trip_ID) as y "
+                    + "ON x.id = y.trip_ID ORDER BY time;";
     // var searchQuery = "SELECT id,license,trips.route,start,end,time_format(time,'%h:%i %p') time,type,seats,count(*) FROM trips WHERE start LIKE ? AND end LIKE ? ORDER BY time;";
 
     sqlcon.connection.query(searchQuery,[
@@ -59,16 +59,18 @@ router.post('/reserve',(req,res,next) => {
     var details = req.body.details;
     var date = req.body.date;
     var user = req.body.user;
+    var seat  = req.body.seat;
     var time = details.time.toString();
     var ntime;
     var number = req.body.nos;
 
     if(time[6] === 'A'){
         if(time.substr(0,2) === '12'){
-            var ntime = '00'+time.substr(2,5);
+            var ntime = '00'+time.substr(2,4);
         }
         else{
             var ntime = time.substr(0,5);
+
         }
     }
     else{
@@ -77,18 +79,21 @@ router.post('/reserve',(req,res,next) => {
         }
         else{
             hr = parseInt(time.substr(0,2)) + 12;
-            var ntime = String(hr)+time.substr(2,5);
+            // console.log(time.substr(2,4));
+            var ntime = String(hr)+time.substr(2,4);
+            // console.log(ntime);
         }
     }
 
 
-    var insertQuery = "INSERT INTO booking_details(booker_id,bus_license,route,start_time,date,trip_ID) VALUES(?,?,?,?,?,?);";
+    var insertQuery = "INSERT INTO booking_details(booker_id,bus_license,route,start_time,seat_no,date,trip_ID) VALUES(?,?,?,?,?,?,?);";
 
     sqlcon.connection.query(insertQuery,[
         user.name.toString(),
         details.license.toString(),
         details.route.toString(),
         ntime,
+        seat.toString(),
         date.date.toString(),
         details.id.toString()
     ], (error,results,fields) => {
@@ -103,10 +108,12 @@ router.post('/reserve',(req,res,next) => {
 });
 
 router.post('/bookings',(req,res,next) => {
+    // console.log(req);
     var date = req.body.date.date;
     var details = req.body.details;
     var time = details.time.toString();
     var ntime;
+    // console.log(date,details)
 
     if(time[6] === 'A'){
         if(time.substr(0,2) === '12'){
@@ -122,12 +129,14 @@ router.post('/bookings',(req,res,next) => {
         }
         else{
             hr = parseInt(time.substr(0,2)) + 12;
-            var ntime = String(hr)+time.substr(2,5);
+            var ntime = String(hr)+time.substr(2,4);
         }
     }
 
-    var query = "SELECT count FROM trips LEFT JOIN (SELECT trip_ID,count(*) as count FROM booking_details WHERE date = ? GROUP BY bus_license) as y "
-                +"on id = trip_ID WHERE license = ? AND time = ?;";
+    var query ="SELECT seat_no FROM booking_details WHERE date = ? AND bus_license = ? AND start_time = ?";
+
+    // "SELECT count FROM trips LEFT JOIN (SELECT trip_ID,count(*) as count FROM booking_details WHERE date = ? GROUP BY bus_license) as y "
+    // +"on id = trip_ID WHERE license = ? AND time = ?;";
 
     sqlcon.connection.query(query,[
         date,
@@ -138,7 +147,7 @@ router.post('/bookings',(req,res,next) => {
             console.log('Error: '+error);
         }
         else{
-            return res.json({success: true, output: results[0].count})
+            return res.json({success: true, output: results})
         }
     })
 });
