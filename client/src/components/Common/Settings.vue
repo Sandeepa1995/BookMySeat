@@ -29,14 +29,69 @@
       </v-tabs-bar>
       <v-tabs-items>
         <v-tabs-content id="bookings">
+          <br>
+          <v-alert
+            color="success"
+            value="true"
+            class="text-xs-center"
+            v-show="banner1">
+            Your cancellation was successful.
+          </v-alert>
           <v-card
-            flat
+            hover
             ripple
-            style = "padding: 50px"
             v-for = "entry in bookings"
-            :key = "entry.id"
-          >
+            :key = "entry.reservation_ID"
+            >
 
+            <v-layout row>
+              <v-flex md5 class="mt-3 ml-2">
+                <div>
+                  <h6>Seat Number: {{entry.seat_no}}</h6>
+                </div>
+              </v-flex>
+              <v-flex md4 class="mt-3">
+                <p style="font-size: 16px">Time: {{entry.time}}</p>
+              </v-flex>
+              <v-flex md3 class="mt-3">
+
+              </v-flex>
+              <v-flex md3>
+                <v-card-actions>
+                  <!--<v-dialog v-model="dialog" persistent max-width="290">-->
+                    <!--<v-btn color="primary" dark slot="activator">Open Dialog</v-btn>-->
+                    <!--<v-card>-->
+                      <!--<v-card-title class="headline">Use Google's location service?</v-card-title>-->
+                      <!--<v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>-->
+                      <!--<v-card-actions>-->
+                        <!--<v-spacer></v-spacer>-->
+                        <!--<v-btn color="green darken-1" flat @click.native="dialog = false">Disagree</v-btn>-->
+                        <!--<v-btn color="green darken-1" flat @click.native="dialog = false">Agree</v-btn>-->
+                      <!--</v-card-actions>-->
+                    <!--</v-card>-->
+                  <!--</v-dialog>-->
+                  <v-btn
+                    outline
+                    flat
+                    color="red"
+                    class="ml-5"
+                    v-on:click="cancelBooking(entry.reservation_ID)"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-card-actions>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-flex md5 class="ml-2">
+                <h6>Date: {{new Date(entry.date).toDateString()}}</h6>
+              </v-flex>
+              <v-flex md4 >
+                <p style="font-size: 16px">Bus License: {{entry.bus_license}}</p>
+              </v-flex>
+              <v-flex md3 ></v-flex>
+              <v-flex md3></v-flex>
+            </v-layout>
           </v-card>
         </v-tabs-content>
         <v-tabs-content id="profile">
@@ -167,6 +222,11 @@ export default {
   name: 'settings',
   data () {
     return {
+
+      bookings: [],
+      banner1: false,
+//      dialog: false,
+
       user:JSON.parse(localStorage.getItem("user")),
       token:localStorage.getItem("token"),
       valid: true,
@@ -205,10 +265,52 @@ export default {
   mounted(){
     this.name=this.user.name;
     this.contact=this.user.contact;
+    this.getBookings()
   },
   methods: {
+    getBookings () {
+      if(this.user.type === "Passenger") {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/common/getbookings',
+          data: {
+            name: this.user.name,
+          },
+          headers:{'Content-Type':'application/json'}
+        }).then((res) => {
+            if(res.data.success === true){
+              this.bookings = JSON.parse(JSON.stringify(res.data.output));
+//              console.log(this.bookings);
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
+      }
+    },
+    cancelBooking (resid) {
+//      console.log(resid);
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/common/cancelBooking',
+        data: {
+          id: resid
+        },
+        headers: {'Content-Type':'application/json'}
+      }).then((res) => {
+          if(res.data.success === true){
+            this.banner1 = true;
+            this.getBookings();
+          }
+      }).catch((error) => {
+        console.log(error);
+      });
+      setTimeout(() => {
+        this.banner1 = false;
+      }, 5000);
+    },
+
     submitPassword () {
-      if (this.user.type === "Passenger") {
+      if (this.user.type === "Passenger" || "Operator") {
         if (this.$refs.form.validate()) {
           axios({
             method: 'post',

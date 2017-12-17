@@ -152,6 +152,37 @@ router.post('/bookings',(req,res,next) => {
     })
 });
 
+router.post('/getbookings', (req,res,next) => {
+    var name = req.body.name.toString();
+    var query = "SELECT reservation_ID,seat_no,time_format(start_time,'%h:%i %p') time,date,bus_license FROM booking_details WHERE booker_ID = ?";
+
+    sqlcon.connection.query(query,[
+        name
+    ],(error,results,fields) => {
+        if(error){
+            console.log('Error '+error);
+        }
+        else{
+            return res.json({success: true, output: results})
+        }
+    })
+});
+
+router.post('/cancelBooking', (req,res,next) => {
+    var id = req.body.id.toString();
+    var query = "DELETE FROM booking_details WHERE reservation_ID = ?";
+
+    sqlcon.connection.query(query,[
+        id
+    ],(error,result,fields) => {
+        if(error){
+            console.log('Error: '+error)
+        }
+        else{
+            return res.json({success:true})
+        }
+    })
+});
 
 
 
