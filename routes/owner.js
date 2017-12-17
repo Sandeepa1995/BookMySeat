@@ -167,7 +167,7 @@ router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(re
                 ], function (error, resu, fields) {
                     if (error)
                     {
-                        res.json({success: false, msg: "Failed to register Bus Operator:Query Error"});
+                        res.json({success: false, msg: "Failure :Query Error"});
                     }
                     else {
                         var mailOptions={
@@ -199,14 +199,8 @@ router.post('/managebus',passport.authenticate('jwt',{session:false}),(req,res,n
             throw error;
             return res.json({success: false})
         }
-        // if (results.length===0){
-        //     console.log("No Bus Operators registered in the system");
-        //     return res.json({success:false});
-        // }
-        // else{
         if (results) {
-            // return res.json({success: true, operators: results})
-            sqlcon.connection.query("SELECT licence_no,type,r_rows,l_rows,r_seats,l_seats,state,name FROM bus NATURAL JOIN operator WHERE owner_id=?",[req.body.owner_id], function (er, resul, fields) {
+            sqlcon.connection.query("SELECT licence_no,type,r_rows,l_rows,r_seats,l_seats,state,name,operator_id FROM bus NATURAL JOIN operator WHERE owner_id=?",[req.body.owner_id], function (er, resul, fields) {
                 if (error){
                     throw error;
                     return res.json({success: false})
@@ -222,15 +216,6 @@ router.post('/managebus',passport.authenticate('jwt',{session:false}),(req,res,n
 
 //Add new bus
 router.post('/addbus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
-    // console.log(req.body.img.substr(0,30));
-    // var buf = new Buffer(req.body.img, 'base64');
-    // console.log(buf);
-    // console.log(buf.toString().substr(0,30));
-    // var imae = new Buffer(buf.toString(), 'binary').toString('base64');
-    // console.log(imae.substr(0,30));
-    //
-    //
-    // res.json({success:req.body.img});
     sqlcon.connection.query("SELECT * FROM bus WHERE licence_no=?",[req.body.licence], function (error, result, fields) {
         if (error) {
             console.log(error);
@@ -254,10 +239,76 @@ router.post('/addbus',passport.authenticate('jwt',{session:false}),(req,res,next
                 ], function (err, resu, fields) {
                     if (err)
                     {
+                        console.log(err);
                         res.json({success: false, msg: "Failed to add Bus:Query Error"});
                     }
                     else {
                         res.json({success: true, msg: "Bus successfully added to the system"});
+                    }
+                });
+            }
+        }
+    });
+});
+
+router.post('/newopnbus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    var password = generator.generate({
+        length: 15,
+        numbers: true
+    });
+    sqlcon.connection.query("SELECT * FROM operator WHERE email=?",[req.body.email], function (error, result, fields) {
+        if (error) {
+            res.json({success: false, msg: "Failed to register Bus Operator: Connection error."});
+        }else {
+            if (result.length > 0) {
+                console.log("Bus Operator already registered in the system");
+                res.json({success:false, msg:"Bus Operator already registered in the system"});
+            }
+            else {
+                sqlcon.connection.query("SELECT add_bun_n_operator(?,?,?,?,?,?,?,?,?,?,?,?) AS res;",[
+                    req.body.licence,
+                    req.body.type,
+                    req.body.r_rows,
+                    req.body.r_seats,
+                    req.body.l_rows,
+                    req.body.l_seats,
+                    null,
+                    req.body.owner,
+                    req.body.email,
+                    'waiting',
+                    password,
+                    config.secret,
+                ], function (error, resu, fields) {
+                    if (error)
+                    {
+                        console.log(error);
+                        res.json({success: false, msg: "Failed to register Bus Operator:Query Error"});
+                    }
+                    else {
+                        if (resu[0].res === 1) {
+                            var mailOptions = {
+                                from: 'BookMySeat <bookmyseat.15@gmail.com>',
+                                to: req.body.email,
+                                subject: 'Login Password - BookMySeat',
+                                text: 'Your password for the Bus Operator account is ' + password
+                            };
+                            transproter.sendMail(mailOptions, function (mailerror, mailres) {
+                                if (mailerror) {
+                                    res.json({
+                                        success: true,
+                                        msg: "Bus Operator successfully registered into database but error in sending email"
+                                    });
+                                }
+                                else {
+                                    console.log(req.body.name + " Registered as Operator");
+                                    res.json({
+                                        success: true,
+                                        msg: "Bus Operator successfully registered",
+                                        operator: resu.insertId
+                                    });
+                                }
+                            });
+                        }
                     }
                 });
             }

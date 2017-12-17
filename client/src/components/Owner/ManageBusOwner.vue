@@ -38,9 +38,18 @@
             </tr>
           </template>
           <template slot="expand" slot-scope="props">
-            <v-card flat>
-              <v-card-text>{{props.item.r_rows}},{{props.item.l_rows}},{{props.item.r_seats}},{{props.item.l_seats}}</v-card-text>
-            </v-card>
+            <v-flex xs6>
+              <v-card flat>
+                <v-card-text><p>Number of rows in the right column: <strong style="font-size: 14px">{{props.item.r_rows}}</strong></p>
+                  <p>Number of seats per row in the right column: <strong style="font-size: 14px">{{props.item.r_seats}}</strong></p>
+                  <p>Number of rows in the left column: <strong style="font-size: 14px">{{props.item.l_rows}}</strong></p>
+                  <p>Number of seats per row in the left column: <strong style="font-size: 14px">{{props.item.l_seats}}</strong></p>
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            <!--<v-card flat>-->
+              <!--<v-card-text>{{props.item.r_rows}},{{props.item.l_rows}},{{props.item.r_seats}},{{props.item.l_seats}}</v-card-text>-->
+            <!--</v-card>-->
           </template>
         </v-data-table>
       </v-card>
@@ -363,26 +372,55 @@ export default {
         if((this.validNew)&&(this.operatorType)) {
           axios({
             method: 'post',
-            url: 'http://localhost:3000/owner/addbus',
+            url: 'http://localhost:3000/owner/newopnbus',
             data: {
               licence: this.licence,
-              type: this.type,
+              type: this.bus_type,
               r_rows: this.r_rows,
               l_rows: this.l_rows,
               r_seats: this.r_seats,
               l_seats: this.l_seats,
               photo: this.ImageUrl,
               owner: this.owner,
-              operator: this.operator[0]
+              email:this.operatoremail
             },
-            headers: {'Content-Type': 'multipart/form-data' ,'Authorization':this.token}
-          }).then((response) => {
+            headers: {'Content-Type': 'application/json','Authorization':this.token}
+          }).then((response)=> {
             console.log(response.data);
-            this.message = response.data.msg;
+            if(!response.data.success){
+              this.message=response.data.msg;
+              location.reload();
+            }
+            else {
+              this.message=response.data.msg;
+            }
           })
             .catch(function (error) {
               console.log(error);
             });
+
+//          axios({
+//            method: 'post',
+//            url: 'http://localhost:3000/owner/addbus',
+//            data: {
+//              licence: this.licence,
+//              type: this.type,
+//              r_rows: this.r_rows,
+//              l_rows: this.l_rows,
+//              r_seats: this.r_seats,
+//              l_seats: this.l_seats,
+//              photo: this.ImageUrl,
+//              owner: this.owner,
+//              operator: this.operator[0]
+//            },
+//            headers: {'Content-Type': 'multipart/form-data' ,'Authorization':this.token}
+//          }).then((response) => {
+//            console.log(response.data);
+//            this.message = response.data.msg;
+//          })
+//            .catch(function (error) {
+//              console.log(error);
+//            });
         }
         else if ((this.validSelect)&&(!this.operatorType)){
           axios({
@@ -423,6 +461,11 @@ export default {
         for (var oper in response.data.operators) {
           this.operators.push([response.data.operators[oper].operator_id,response.data.operators[oper].name])
         }
+
+        if(response.data.buses.length>0){
+          this.listmessage="";
+        }
+
         for (var bus in response.data.buses) {
           if(response.data.buses[bus].state==="waiting"){
             this.buses.push({
@@ -433,7 +476,7 @@ export default {
               r_seats:response.data.buses[bus].r_seats,
               l_seats:response.data.buses[bus].l_seats,
               state:"Waiting for Operator's response",
-              operator:response.data.buses[bus].name
+              operator:response.data.buses[bus].operator_id+","+response.data.buses[bus].name
             })
           }
           else{
@@ -445,7 +488,7 @@ export default {
               r_seats:response.data.buses[bus].r_seats,
               l_seats:response.data.buses[bus].l_seats,
               state:response.data.buses[bus].state,
-              operator:response.data.buses[bus].name
+              operator:response.data.buses[bus].operator_id+","+response.data.buses[bus].name
             })
           }
         }
