@@ -1,61 +1,62 @@
 <template>
   <div id="search-results">
 
-    <v-container>
+    <v-container grid-list-md>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <h3 id="title">{{title}}</h3>
 
-      <h3 id="title">{{title}}</h3>
+          <v-card v-if="!available">
+            <v-alert color="error" icon="warning" value="true">
+              Sorry, your search did not match any routes.
+            </v-alert>
+          </v-card>
 
-      <v-card v-if="!available">
-        <v-card-title>
-          <div>
-            <h5 id="no-results">Your search did not match any routes</h5>
-          </div>
-        </v-card-title>
-      </v-card>
+          <v-card v-for="result in results" :key="result">
+            <v-card-title>
+              <div style="width: 100%">
+                <h3 class="headline mb-0">Route Number: <strong>{{result.routeNum}}</strong></h3>
+                <div>Starting Point: <strong>{{result.routeStart}}</strong></div>
+                <div>Ending Point: <strong>{{result.routeEnd}}</strong></div>
 
+                <br/>
 
+                <v-expansion-panel popout>
+                  <v-expansion-panel-content>
+                    <div slot="header"><strong><em>More</em></strong></div>
+                    <div style="margin-left: 20px">Stopping Places (in order): </div>
+                    <div v-for="(stop, index) in result.routeStops">
+                      <div style="margin-left: 75px">{{index+1}}. <strong>{{stop}}</strong></div>
+                    </div>
+                    <v-card-actions>
+                      <div id="buttons">
+                        <v-btn
+                          color="primary"
+                          v-on:click="editRoute(result.routeID)"
+                        >
+                          Edit
+                        </v-btn>
 
-      <v-card v-for="result in results" :key="result">
-        <v-card-title>
-          <div style="width: 100%">
-            <h3 class="headline mb-0">Route Number: <strong>{{result.routeNum}}</strong></h3>
-            <div>Starting Point: <strong>{{result.routeStart}}</strong></div>
-            <div>Ending Point: <strong>{{result.routeEnd}}</strong></div>
+                        <v-btn
+                          color="error"
+                          v-on:click="deleteRoute(result.routeID)"
+                        >
+                          Delete
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </div>
+            </v-card-title>
+          </v-card>
 
-            <br/>
-
-            <v-expansion-panel popout>
-              <v-expansion-panel-content>
-                <div slot="header">More</div>
-                <div style="margin-left: 20px">Stopping Places (in order): </div>
-                <div v-for="(stop, index) in result.routeStops">
-                  <div style="margin-left: 75px">{{index+1}}. <strong>{{stop}}</strong></div>
-                </div>
-                <v-card-actions>
-                  <v-btn
-                    color="primary"
-                    v-on:click="editRoute(result.routeID)"
-                  >
-                    Edit
-                  </v-btn>
-
-                  <v-btn
-                    color="error"
-                    v-on:click="deleteRoute(result.routeID)"
-                  >
-                    Delete
-                  </v-btn>
-
-                </v-card-actions>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-
-
-          </div>
-        </v-card-title>
-      </v-card>
-
+        </v-flex>
+      </v-layout>
     </v-container>
+
+
+
   </div>
 </template>
 
@@ -134,5 +135,11 @@
   }
   #no-results{
     color: gray;
+  }
+  #search-results{
+    width: 100%;
+  }
+  #buttons{
+    padding: 10px;
   }
 </style>

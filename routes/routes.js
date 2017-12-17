@@ -77,7 +77,7 @@ router.post("/search", (req, res)=>{
                 return res.json({success: false, msg: "Could not find the requested route"});
             } else{
                 var output = [];
-
+                
                 foundIDs.forEach((foundID)=>{
                     var route = {
                         routeID: "",
