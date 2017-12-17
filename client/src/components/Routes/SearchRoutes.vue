@@ -1,39 +1,52 @@
 <template>
   <div id="search-routes">
 
-    <v-container>
+    <v-container grid-list-md>
 
-      <h3 id="title">{{title}}</h3>
+      <v-layout row-wrap>
 
-      <v-card>
+        <v-flex xs-12>
 
-        <v-form v-model="valid" ref="form" id="search-form">
+          <h3 id="title">{{title}}</h3>
 
-          <v-text-field
-            label="Route Number"
-            v-model="routeNum"
-          ></v-text-field>
+          <v-card>
 
-          <v-text-field
-            label="City"
-            v-model="city"
-          ></v-text-field>
+            <v-form v-model="valid" ref="form" id="search-form">
 
-          <v-btn
-            v-on:click="search"
-          >
-            search
-            <v-icon>search</v-icon>
-          </v-btn>
+              <v-text-field
+                label="Route Number"
+                v-model="routeNum"
+              ></v-text-field>
 
-          <v-btn
-            v-on:click="clear"
-          >
-            clear
-          </v-btn>
-        </v-form>
+              <v-text-field
+                label="City"
+                v-model="city"
+              ></v-text-field>
 
-      </v-card>
+              <v-layout row justify-space-around>
+
+                <v-btn
+                  v-on:click="search"
+                >
+                  search
+                  <v-icon>search</v-icon>
+                </v-btn>
+
+                <v-btn
+                  v-on:click="clear"
+                >
+                  clear
+                </v-btn>
+
+              </v-layout>
+
+            </v-form>
+
+          </v-card>
+
+        </v-flex>
+
+      </v-layout>
 
     </v-container>
 
@@ -93,6 +106,9 @@
   #search-form{
     margin: 20px;
     padding: 20px;
+  }
+  #search-routes{
+    width: 75%;
   }
 
 </style>

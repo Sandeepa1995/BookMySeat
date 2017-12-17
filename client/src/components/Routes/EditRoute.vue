@@ -1,57 +1,70 @@
 <template>
   <div id="edit-route">
 
-    <v-container>
+    <v-container grid-list-md>
 
-      <h3 id="title">{{title}}</h3>
+      <v-layout row-wrap>
 
-      <v-card>
+        <v-flex xs-12>
 
-        <v-form v-model="valid" ref="form" id="edit-route-form">
+          <h3 id="title">{{title}}</h3>
 
-          <v-text-field
-            label="Route Number"
-            v-model="routeNum"
-            :rules="rules"
-            required
-          ></v-text-field>
+          <v-card>
 
-          <v-text-field
-            label="Starting Point"
-            v-model="routeStart"
-            :rules="rules"
-            required
-          ></v-text-field>
+            <v-form v-model="valid" ref="form" id="edit-route-form">
 
-          <v-text-field
-            label="Ending Point"
-            v-model="routeEnd"
-            :rules="rules"
-            required
-          ></v-text-field>
+              <v-text-field
+                label="Route Number"
+                v-model="routeNum"
+                :rules="rules"
+                required
+              ></v-text-field>
 
-          <v-text-field
-            label="Intermediate Stops"
-            v-model="routeStops"
-            placeholder="Insert the stops (if any) in order, separated by spaces"
-            multiLine
-          ></v-text-field>
+              <v-text-field
+                label="Starting Point"
+                v-model="routeStart"
+                :rules="rules"
+                required
+              ></v-text-field>
 
-          <v-btn
-            v-on:click="updateRoute"
-            :disabled="!valid"
-          >
-            submit
-          </v-btn>
+              <v-text-field
+                label="Ending Point"
+                v-model="routeEnd"
+                :rules="rules"
+                required
+              ></v-text-field>
 
-          <v-btn
-            v-on:click="clear"
-          >
-            clear
-          </v-btn>
-        </v-form>
+              <v-text-field
+                label="Intermediate Stops"
+                v-model="routeStops"
+                placeholder="Insert the stops (if any) in order, separated by spaces"
+                multiLine
+              ></v-text-field>
 
-      </v-card>
+              <v-layout row justify-space-around>
+
+                <v-btn
+                  v-on:click="updateRoute"
+                  :disabled="!valid"
+                >
+                  submit
+                </v-btn>
+
+                <v-btn
+                  v-on:click="clear"
+                >
+                  clear
+                </v-btn>
+
+              </v-layout>
+
+            </v-form>
+
+          </v-card>
+
+        </v-flex>
+
+      </v-layout>
 
     </v-container>
 
@@ -129,6 +142,9 @@
 <style scoped>
   #title{
     text-align: center;
+  }
+  #edit-route{
+    width: 75%;
   }
   #edit-route-form{
     margin: 20px;
