@@ -77,18 +77,17 @@
           var user=JSON.parse(localStorage.getItem("user"));
           if (user.type==="Bus Owner") {
             menuItems = [
-              {icon: 'search', title: 'Search Buses', link: '/searchBus'},
+              {icon: 'search', title: 'Search Trips', link: '/searchBus'},
               {icon: 'search', title: 'Search Routes', link: '/routes/search'},
-              {icon: 'input', title: 'Add Trips', link: '/addtrips'},
-              {icon: 'search', title: 'Search Buses',link: '/searchBus'},
-//              {icon: 'input', title: 'Add Trips',link: '/addtrips'},
+//              {icon: 'input', title: 'Add Trips', link: '/addtrips'},
+//              {icon: 'search', title: 'Search Buses',link: '/searchBus'},
               {icon:"directions_bus", title:"Manage Buses", link:'/owner/managebus'},
               {icon:"settings", title:"Options", link:'/settings'}   //Logged in nav components
             ]
           }
           else if(user.type==="NTC"){
             menuItems = [
-              {icon: 'search', title: 'Search Buses', link: '/searchBus'},
+              {icon: 'search', title: 'Search Trips', link: '/searchBus'},
               {icon: 'search', title: 'Search Routes', link: '/routes/search'},
               {icon: 'search', title: 'Add Routes', link: '/routes/new'},
               {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
@@ -96,7 +95,7 @@
           }
           else{
             menuItems = [
-              {icon: 'search', title: 'Search Buses', link: '/searchBus'},
+              {icon: 'search', title: 'Search Trips', link: '/searchBus'},
               {icon: 'search', title: 'Search Routes', link: '/routes/search'},
               {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
             ]
