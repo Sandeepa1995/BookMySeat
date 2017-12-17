@@ -45,6 +45,11 @@
                   <p>Number of rows in the left column: <strong style="font-size: 14px">{{props.item.l_rows}}</strong></p>
                   <p>Number of seats per row in the left column: <strong style="font-size: 14px">{{props.item.l_seats}}</strong></p>
                 </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    v-on:click="selectBus(props.item.licence,props.item.type,props.item.r_rows,props.item.r_seats,props.item.l_rows,props.item.l_seats)"
+                  >Add Trip</v-btn>
+                </v-card-actions>
               </v-card>
             </v-flex>
             <!--<v-card flat>-->
@@ -326,10 +331,24 @@ export default {
       { text: 'State', value: 'state' }
     ],
 
+    selectedBus: {
+      license: '',
+      type: '',
+      seats: ''
+    }
+
   }),
   computed: {
   },
   methods: {
+    selectBus (license,type,rr,rs,lr,ls) {
+      this.selectedBus.license = license;
+      this.selectedBus.type = type;
+      this.selectedBus.seats = (rr+1)*rs + (lr+1)*ls + 1;
+      localStorage.setItem('selectedBus',JSON.stringify(this.selectedBus));
+      this.$router.push('/addtrips');
+    },
+
     getvals(){
       console.log(this.r_rows,(this.r_rows+1),(this.r_rows+1)*40,(this.r_rows+1)*40 +125)
     },

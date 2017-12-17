@@ -80,6 +80,8 @@
               {icon: 'search', title: 'Search Buses', link: '/searchBus'},
               {icon: 'search', title: 'Search Routes', link: '/routes/search'},
               {icon: 'input', title: 'Add Trips', link: '/addtrips'},
+              {icon: 'search', title: 'Search Buses',link: '/searchBus'},
+//              {icon: 'input', title: 'Add Trips',link: '/addtrips'},
               {icon:"directions_bus", title:"Manage Buses", link:'/owner/managebus'},
               {icon:"settings", title:"Options", link:'/settings'}   //Logged in nav components
             ]

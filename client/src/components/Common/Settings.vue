@@ -269,7 +269,7 @@ export default {
   },
   methods: {
     getBookings () {
-      if(this.user.type === "Passenger") {
+      if(this.user.type === "Passenger" || "Operator") {
         axios({
           method: 'post',
           url: 'http://localhost:3000/common/getbookings',
@@ -310,7 +310,7 @@ export default {
     },
 
     submitPassword () {
-      if (this.user.type === "Passenger" || "Operator") {
+      if (this.user.type === "Passenger") {
         if (this.$refs.form.validate()) {
           axios({
             method: 'post',

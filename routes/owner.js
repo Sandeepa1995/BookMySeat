@@ -365,4 +365,32 @@ router.post('/newtrip',passport.authenticate('jwt',{session:false}),(req,res,nex
     });
 });
 
+router.post('/getRoute',(req,res,next) => {
+
+    var query = "SELECT route_num FROM route";
+
+    sqlcon.connection.query(query,[],(error,results,field) => {
+        if(error){
+            console.log('Error: '+error);
+        }
+        else{
+            return res.json({success:true,output:results})
+        }
+    })
+});
+
+router.post('/getDest',(req,res,next) => {
+    var route = req.body.route.toString();
+    var query = "SELECT start,end FROM route WHERE route_num = ?";
+
+    sqlcon.connection.query(query,[route],(error,results,field) => {
+        if(error){
+            console.log('Error: '+error);
+        }
+        else{
+            return res.json({success:true,output:results})
+        }
+    })
+})
+
 module.exports = router;

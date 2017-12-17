@@ -27,27 +27,45 @@
           Trip added successfully.
         </v-alert>
         <v-form v-model="valid" ref="form" lazy-validation>
+          <!--<v-select-->
+          <!--label="License"-->
+          <!--v-model="license"-->
+          <!--:items="items"-->
+          <!--:rules="[v => !!v || 'License is required']"-->
+          <!--required-->
+          <!--&gt;</v-select>-->
           <v-text-field
             label="License Number"
+            disabled
             v-model="license"
             :rules="[v => !!v || 'License is required.']"
             required
           ></v-text-field>
-          <v-text-field
-            v-model="route"
-            label="Route"
-            :rules="[v => !!v || 'Route is required.']"
-            required
-          ></v-text-field>
+          <v-select
+          label="Route"
+          v-model="route"
+          :items="items"
+          v-on:change="getDestination()"
+          :rules="[v => !!v || 'Route is required']"
+          required
+          ></v-select>
+          <!--<v-text-field-->
+            <!--v-model="route"-->
+            <!--label="Route"-->
+            <!--:rules="[v => !!v || 'Route is required.']"-->
+            <!--required-->
+          <!--&gt;</v-text-field>-->
           <v-text-field
             label="Start Location"
             v-model="start"
+            disabled
             :rules="[v => !!v || 'Start Location is required.']"
             required
           ></v-text-field>
           <v-text-field
             label="End Location"
             v-model="end"
+            disabled
             :rules="[v => !!v || 'End Location is required.']"
             required
           ></v-text-field>
@@ -74,16 +92,24 @@
               autosave
               format="24hr"></v-time-picker>
           </v-menu>
-          <v-select
+          <v-text-field
             label="Bus Type"
+            disabled
             v-model="type"
-            :items="items"
-            append-icon="donut_large"
-            :rules="[v => !!v || 'Bus type is required']"
+            :rules="[v => !!v || 'Bus type is required.']"
             required
-          ></v-select>
+          ></v-text-field>
+          <!--<v-select-->
+            <!--label="Bus Type"-->
+            <!--v-model="type"-->
+            <!--:items="items"-->
+            <!--append-icon="donut_large"-->
+            <!--:rules="[v => !!v || 'Bus type is required']"-->
+            <!--required-->
+          <!--&gt;</v-select>-->
           <v-text-field
             label="Number of Seats"
+            disabled
             v-model="seats"
             :rules="[v => !!v || 'Number of seats is required.']"
             required
@@ -136,18 +162,56 @@
         type: '',
         time: '',
         seats: '',
-        items: [
-          'Luxury',
-          'Semi-Luxury',
-          'Air Conditioned',
-          'Normal'
-        ],
+        selected: '',
+        items: [],
       }
     },
     mounted(){
+      this.selected = JSON.parse(localStorage.getItem('selectedBus'));
+      this.license = this.selected.license;
+      this.type = this.selected.type;
+      this.seats = this.selected.seats;
+      this.getRoute();
 
     },
     methods: {
+      getRoute () {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/owner/getRoute',
+          data: {},
+          headers: {'Content-Type':'application/json'}
+        }).then((res) => {
+            if(res.data.success === true){
+              var x = res.data.output
+              for(var j in x){
+                this.items.push(x[j].route_num)
+              }
+            }
+        }).catch((error) => {
+          console.log(error);
+        })
+      },
+
+      getDestination () {
+        if(this.route != ''){
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/owner/getDest',
+            data: {
+              route: this.route
+            },
+            headers: {'Content-Type':'application/json'}
+          }).then((res) => {
+            var x = res.data.output;
+            this.start = x[0].start;
+            this.end = x[0].end;
+          }).catch((error) => {
+            console.log(error);
+          })
+        }
+      },
+
       submit () {
         if (this.$refs.form.validate()) {
           axios({
