@@ -15,6 +15,7 @@ const operator = require('./routes/operator');
 const owner = require('./routes/owner');
 const ntc = require('./routes/ntc');
 const common = require('./routes/common');
+const routes = require('./routes/routes');
 
 const generator = require('generate-password');
 const jwt=require('jsonwebtoken');
@@ -44,6 +45,7 @@ app.use("/operator",operator);
 app.use("/owner",owner);
 app.use("/ntc",ntc);
 app.use("/common",common);
+app.use("/routes", routes);
 
 //Is database connected
 sqlcon.connection.connect(function(err) {

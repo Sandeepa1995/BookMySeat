@@ -78,7 +78,8 @@
             menuItems = [
               {icon: 'search', title: 'Search Buses',link: '/searchBus'},
               {icon: 'input', title: 'Add Trips',link: '/addtrips'},
-              {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
+              {icon:"directions_bus", title:"Manage Buses", link:'/owner/managebus'},
+              {icon:"settings", title:"Options", link:'/settings'}   //Logged in nav components
             ]
           }
           else{
