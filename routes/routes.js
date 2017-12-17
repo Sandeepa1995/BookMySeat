@@ -64,9 +64,11 @@ router.post("/search", (req, res)=>{
     const routeNum = req.body.routeNum;
     const city = req.body.city;
 
-    var sql1 = "SELECT DISTINCT route_id FROM route NATURAL LEFT JOIN route_stop WHERE route_num LIKE %?% ANS stop LIKE %?%;";
+    var sql1 = "SELECT DISTINCT route_id " +
+        "FROM route NATURAL LEFT JOIN route_stop " +
+        "WHERE route_num LIKE \"%" + routeNum + "%\" AND stop LIKE \"%" + city + "%\";";
 
-    db.query(sql1, [routeNum, city], (error, foundIDs)=>{
+    db.query(sql1, (error, foundIDs)=>{
         if(error){
             console.log(error);
             return res.json({success: false, msg: "Could not the complete the search"});
