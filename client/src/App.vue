@@ -68,8 +68,8 @@
     computed:{
       menuItems(){
         let menuItems = [
-          {icon: 'search', title: 'Search Buses',link: '/searchBus'},
-          {icon:"supervisor_account", title:"Register",link:'/register'},   //Logged out nav components
+          {icon: 'search', title: 'Search Buses', link: '/searchBus'},
+          {icon:"supervisor_account", title:"Register", link:'/register'},   //Logged out nav components
           {icon:"lock_open", title:"Sign In",link:'/login'}
         ];
         if(localStorage.getItem("user")){

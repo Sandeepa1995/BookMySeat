@@ -129,8 +129,8 @@ router.post("/search", (req, res)=>{
 router.post("/:id/delete", (req, res)=>{
     var routeID = req.params.id;
 
-    var sql1 = "DELETE FROM route WHERE route_id=?;";
-    var sql2 = "DELETE FROM route_stop WHERE route_id=?;";
+    var sql1 = "DELETE FROM route_stop WHERE route_id=?;";
+    var sql2 = "DELETE FROM route WHERE route_id=?;";
 
     db.query(sql1, [routeID], (error, deletedRoute)=>{
         if(error){
