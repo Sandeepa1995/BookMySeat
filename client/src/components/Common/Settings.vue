@@ -6,6 +6,10 @@
     <v-tabs dark fixed icons centered>
       <v-tabs-bar class="red darken-4">
         <v-tabs-slider color="yellow"></v-tabs-slider>
+        <v-tabs-item href="bookings">
+          <v-icon>credit_card</v-icon>
+          Reservations
+        </v-tabs-item>
         <v-tabs-item href="profile">
           <v-icon>account_circle</v-icon>
           User Profile
@@ -24,6 +28,17 @@
         </v-tabs-item>
       </v-tabs-bar>
       <v-tabs-items>
+        <v-tabs-content id="bookings">
+          <v-card
+            flat
+            ripple
+            style = "padding: 50px"
+            v-for = "entry in bookings"
+            :key = "entry.id"
+          >
+
+          </v-card>
+        </v-tabs-content>
         <v-tabs-content id="profile">
           <v-card flat style="padding: 50px">
             <h6>Account Type: {{user.type}}</h6>

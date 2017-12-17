@@ -52,5 +52,6 @@ CREATE TABLE booking_details (
     start_time time,
     seat_no varchar(255),
     date date,
+    trip_ID int,
     PRIMARY KEY (reservation_ID)
 );

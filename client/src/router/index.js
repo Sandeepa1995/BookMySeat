@@ -8,6 +8,7 @@ import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
 import ManageBusOwner from '@/components/Owner/ManageBusOwner'
+import Reservation from '@/components/Reservation'
 
 //Routes
 import RoutesHome from '../components/Routes/RoutesHome.vue'
@@ -85,6 +86,11 @@ export default new Router({
       path: '/routes/:id/edit',
       name: 'EditRoute',
       component: EditRoute
+    },
+    {
+      path: '/reservation/:id',
+      name: 'Reservation',
+      component: Reservation
     }
   ]
 })
