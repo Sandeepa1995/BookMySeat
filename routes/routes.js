@@ -26,7 +26,7 @@ router.post("/new", (req, res)=>{
     }
 
     var sql = "INSERT INTO route(route_num, start, end) VALUES (?, ?, ?);";
-
+// kk
     db.query(sql, [routeNum, routeStart, routeEnd],(error, result)=>{
         if(error){
             console.log(error);
