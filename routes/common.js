@@ -184,6 +184,23 @@ router.post('/cancelBooking', (req,res,next) => {
     })
 });
 
+router.post('/getdim', (req,res,next) => {
+    var license = req.body.license.toString();
+    var query = "SELECT r_rows,r_seats,l_rows,l_seats FROM bus WHERE licence_no = ?";
+
+    sqlcon.connection.query(query,[
+        license
+    ],(error,results,fields) => {
+        if(error){
+            console.log('Error: '+error)
+        }
+        else{
+            return res.json({success:true, output:results})
+        }
+    })
+});
+
+
 
 
 module.exports = router;

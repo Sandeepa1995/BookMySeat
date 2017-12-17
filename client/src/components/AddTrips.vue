@@ -45,7 +45,7 @@
           label="Route"
           v-model="route"
           :items="items"
-          v-on:change="getDestination()"
+          :change="getDestination()"
           :rules="[v => !!v || 'Route is required']"
           required
           ></v-select>

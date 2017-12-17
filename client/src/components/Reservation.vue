@@ -146,19 +146,10 @@
         banner2: false,
         banner3: false,
 
-        items: [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-
-        r_rows:10,
-        l_rows:8,
-        r_seats:2,
-        l_seats:2,
+        r_rows:0,
+        l_rows:0,
+        r_seats:0,
+        l_seats:0,
         checkbox: [],
         booked:[]
       }
@@ -168,6 +159,7 @@
       this.date = JSON.parse(localStorage.getItem('date'));
       this.userID = JSON.parse(localStorage.getItem('user'));
       this.getBookings();
+      this.getDimensions();
     },
     methods: {
       hideBanner() {
@@ -246,6 +238,26 @@
         else{
           return (this.l_rows)*(this.l_seats)+(this.r_rows)*(this.r_seats)+x;
         }
+      },
+
+      getDimensions () {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/common/getdim',
+          data: {
+            license: this.trip.license
+          },
+          headers: {'Content-Type':'application/json'}
+        }).then((res) => {
+          var x = res.data.output;
+
+          this.r_rows = parseInt(x[0].r_rows);
+          this.r_seats = parseInt(x[0].r_seats);
+          this.l_rows = parseInt(x[0].l_rows);
+          this.l_seats = parseInt(x[0].l_seats);
+        }).catch((error) => {
+          console.log(error);
+        })
       }
     }
   }
