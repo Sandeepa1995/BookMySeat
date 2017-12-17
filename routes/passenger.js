@@ -8,12 +8,12 @@ const config = require('./../../config.json');
 
 
 router.post('/register',(req,res,next)=>{
-    sqlcon.connection.query("SELECT * FROM passenger WHERE email=?",[req.body.email], function (error, results, fields) {
+    sqlcon.connection.query("SELECT * FROM passenger WHERE passenger_id=?",[req.body.id], function (error, results, fields) {
         if (error) {
             res.json({success: false, msg: "Failed to register passenger: Connection error."});
         }else {
             if (results.length > 0) {
-                console.log("Passenger already in registered in the system");
+                // console.log("Passenger already in registered in the system");
                 res.json({success:false, msg:"Passenger already in registered in the system"});
             }
             else {
@@ -27,6 +27,7 @@ router.post('/register',(req,res,next)=>{
                 ], function (error, results, fields) {
                     if (error)
                     {
+                        console.log(error);
                         res.json({success: false, msg: "Failed to register passenger:Query Error"});
                     }
                     else {

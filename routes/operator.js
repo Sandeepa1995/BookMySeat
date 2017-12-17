@@ -129,4 +129,18 @@ router.post('/changedetails',passport.authenticate('jwt',{session:false}),(req,r
     });
 });
 
+//Get operator list
+router.get('/getlist',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    sqlcon.connection.query("SELECT * FROM getOperators", function (error, results, fields) {
+        if (error) throw error;
+        if (results.length===0){
+            console.log("No Bus Operators registered in the system");
+            return res.json({success:false});
+        }
+        else{
+            return res.json({success:true,operators:results})
+        }
+    });
+});
+
 module.exports = router;
