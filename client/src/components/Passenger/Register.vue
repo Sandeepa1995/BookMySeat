@@ -94,7 +94,7 @@ export default {
     confirmedPW:'',
     pWRules: [
       (v) => !!v || 'Password is required',
-      (v) => v && v.length <= 15 || 'Password must be less than 60 characters'
+      (v) => v && v.length <= 15 || 'Password must be less than 15 characters'
     ],
     contact: '',
     contactRules: [

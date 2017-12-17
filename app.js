@@ -31,7 +31,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname,'public')));
 
 //Body parser Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '5mb'}));
 
 //Passport Middleware
 app.use(passport.initialize());

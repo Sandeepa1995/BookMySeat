@@ -8,4 +8,11 @@ const connection = mysql.createConnection({
     database : 'bookmyseat'
 });
 
+// const connection = mysql.createConnection({
+//     host     : 'localhost',
+//     user     : 'root',
+//     password : 'ananda',
+//     database : 'bookmyseat'
+// });
+
 exports.connection = connection;

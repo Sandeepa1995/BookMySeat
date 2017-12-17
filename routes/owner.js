@@ -49,9 +49,7 @@ router.post('/authenticate',(req,res,next)=>{
                         const token = jwt.sign({data:results[0],type:"Owner"},"BookMySeatSecret",{
                             expiresIn: 604800 //1 week
                         });
-
-                        return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Owner",contact:results[0].contact_no}})
-                        // return res.json({success:true,token:'JWT '+token,user:results[0]})
+                        return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Owner",contact:results[0].contact_no, id:results[0].owner_id}})
                     }
                     else{
                         return res.json({success:false,msg:"Incorrect Password"});
@@ -156,8 +154,8 @@ router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(re
             res.json({success: false, msg: "Failed to register Bus Operator: Connection error."});
         }else {
             if (result.length > 0) {
-                console.log("Bus Operator already in registered in the system");
-                res.json({success:false, msg:"Bus Operator already in registered in the system"});
+                console.log("Bus Operator already registered in the system");
+                res.json({success:false, msg:"Bus Operator already registered in the system"});
             }
             else {
                 sqlcon.connection.query("INSERT INTO operator (email,name,password,contact_no) VALUES (?,?,AES_ENCRYPT(?,?),?)",[
@@ -187,6 +185,79 @@ router.post('/registeroperator',passport.authenticate('jwt',{session:false}),(re
                                 res.json({success: true, msg: "Bus Operator successfully registered"});
                             }
                         });
+                    }
+                });
+            }
+        }
+    });
+});
+
+//Manage Bus Load
+router.post('/managebus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    sqlcon.connection.query("SELECT * FROM getOperators", function (error, results, fields) {
+        if (error){
+            throw error;
+            return res.json({success: false})
+        }
+        // if (results.length===0){
+        //     console.log("No Bus Operators registered in the system");
+        //     return res.json({success:false});
+        // }
+        // else{
+        if (results) {
+            // return res.json({success: true, operators: results})
+            sqlcon.connection.query("SELECT licence_no,type,r_rows,l_rows,r_seats,l_seats,state,name FROM bus NATURAL JOIN operator WHERE owner_id=?",[req.body.owner_id], function (er, resul, fields) {
+                if (error){
+                    throw error;
+                    return res.json({success: false})
+                }
+                if (results) {
+                    return res.json({success: true, operators: results, buses:resul})
+                }
+            });
+        }
+        // }
+    });
+});
+
+//Add new bus
+router.post('/addbus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    // console.log(req.body.img.substr(0,30));
+    // var buf = new Buffer(req.body.img, 'base64');
+    // console.log(buf);
+    // console.log(buf.toString().substr(0,30));
+    // var imae = new Buffer(buf.toString(), 'binary').toString('base64');
+    // console.log(imae.substr(0,30));
+    //
+    //
+    // res.json({success:req.body.img});
+    sqlcon.connection.query("SELECT * FROM bus WHERE licence_no=?",[req.body.licence], function (error, result, fields) {
+        if (error) {
+            console.log(error);
+            res.json({success: false, msg: "Failed to add Bus to the System: Connection error."});
+        }else {
+            if (result.length > 0) {
+                console.log("Bus already in the system");
+                res.json({success:false, msg:"Bus already in the system"});
+            }
+            else {
+                sqlcon.connection.query("INSERT INTO bus (licence_no,type,r_rows,r_seats,l_rows,l_seats,owner_id,operator_id,state) VALUES (?,?,?,?,?,?,?,?,?)",[
+                    req.body.licence,
+                    req.body.type,
+                    req.body.r_rows,
+                    req.body.r_seats,
+                    req.body.l_rows,
+                    req.body.l_seats,
+                    req.body.owner,
+                    req.body.operator,
+                    'waiting'
+                ], function (err, resu, fields) {
+                    if (err)
+                    {
+                        res.json({success: false, msg: "Failed to add Bus:Query Error"});
+                    }
+                    else {
+                        res.json({success: true, msg: "Bus successfully added to the system"});
                     }
                 });
             }

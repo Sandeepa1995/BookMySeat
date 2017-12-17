@@ -78,6 +78,9 @@ export default {
       else{
         return (this.l_rows)*(this.l_seats)+(this.r_rows)*(this.r_seats)+x;
       }
+    },
+    getvals(){
+      console.log(this.r_rows,(this.r_rows+1),(this.r_rows+1)*40,(this.r_rows+1)*40 +125)
     }
   }
 }
