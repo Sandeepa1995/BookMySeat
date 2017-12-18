@@ -28,14 +28,18 @@
           label="From"
           name="value"
           v-model="searchValue1"
-          :rules="[v => !!v || 'Starting location is required.']"
+          :rules="[v => !!v || 'Starting location is required.',
+          (v) => /^[a-zA-Z]+$/.test(v) || 'Locations cannot include numbers'
+          ]"
           required
         ></v-text-field>
         <v-text-field
           label="To"
           name="value"
           v-model="searchValue2"
-          :rules="[v => !!v || 'Destination is required.']"
+          :rules="[v => !!v || 'Destination is required.',
+          (v) => /^[a-zA-Z]+$/.test(v) || 'Locations cannot include numbers'  
+          ]"
           required
         ></v-text-field>
         <v-menu

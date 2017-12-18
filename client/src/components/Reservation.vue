@@ -10,7 +10,7 @@
               <h6 class="text-xs-center">License Number: {{trip.license}}</h6>
               <h6 class="text-xs-center">Leaving Time: {{trip.time}}</h6>
               <h6 class="text-xs-center">Starting Location: {{trip.start}}</h6>
-              <h6 class="text-xs-center">Stops:   </h6>
+              <!--<h6 class="text-xs-center">Stops:   </h6>-->
               <h6 class="text-xs-center">Bus Type: {{trip.type}}</h6>
               <h6 class="text-xs-center">Date: {{date.date}}</h6>
               <h5 class="text-xs-center green--text">Seats Available: {{trip.seats - booked.length}} / {{trip.seats}}</h5>
