@@ -1,7 +1,18 @@
 <template>
   <div class="home">
-    <h2>{{ msg }}</h2>
-    <h4>Be hip, and book a seat for your trip!</h4>
+    <template>
+      <!--<v-parallax src="/../../static/bus_img2.jpg" height="1000">-->
+        <v-layout column align-center justify-center style="padding-top: 20%">
+          <h1 class="white--text" style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ msg }}</h1>
+          <h4 class="white--text" style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Be hip, and book a seat for your trip!</h4>
+        </v-layout>
+        <!--<v-card style="padding: 100px">-->
+          <!--<h2></h2>-->
+          <!--<h4>Be hip, and book a seat for your trip!</h4>-->
+        <!--</v-card>-->
+      <!--</v-parallax>-->
+    </template>
+
 
     <!--&lt;!&ndash;Seat selector starts here&ndash;&gt;-->
     <!--<div class="container" style="border: 10px solid; padding-top: 40px;" v-bind:style="{ width:  ((l_seats+1+r_seats)*40 +95)+ 'px', height:  ((r_rows+1)*40 +125)+ 'px' }">-->
@@ -51,7 +62,10 @@
 </template>
 
 <script>
+import VCard from "vuetify/es5/components/VCard/VCard";
+
 export default {
+  components: {VCard},
   name: 'home',
   data () {
     return {

@@ -4,7 +4,7 @@
       {{message}}
     </v-alert>
     <div class="container" style="background-color: white">
-      <h4>{{ title }}</h4>
+      <h4 style="color: black" >{{ title }}</h4>
       <v-alert color="error" icon="warning" transition="scale-transition" value="true" v-show="listmessage.length>0">
         {{listmessage}}
       </v-alert>
