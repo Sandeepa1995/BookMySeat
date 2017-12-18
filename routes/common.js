@@ -154,7 +154,7 @@ router.post('/bookings',(req,res,next) => {
 
 router.post('/getbookings', (req,res,next) => {
     var name = req.body.name.toString();
-    var query = "SELECT reservation_ID,seat_no,time_format(start_time,'%h:%i %p') time,date,bus_license FROM booking_details WHERE booker_ID = ?";
+    var query = "SELECT reservation_ID,seat_no,time_format(start_time,'%h:%i %p') time,date,bus_license FROM booking_details WHERE booker_ID = ? ORDER BY date";
 
     sqlcon.connection.query(query,[
         name
