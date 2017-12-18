@@ -108,7 +108,7 @@
           }).then((res)=>{
             console.log(res);
             console.log(this);
-            this.$router.push("/routes");
+            this.$router.push("/");
           }).catch((error)=>{
             console.log(error);
           })

@@ -38,7 +38,7 @@
     </v-toolbar>
     <main>
       <v-content>
-        <v-parallax src="/../../static/bus_img3.jpg" height="1500">
+        <v-parallax src="/../../static/bus_img2.jpg" height="1000">
           <v-container fluid>
             <v-slide-y-transition mode="out-in">
               <v-layout column align-center>

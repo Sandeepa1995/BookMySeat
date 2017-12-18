@@ -69,7 +69,8 @@
       return{
         title: "Search Results",
         results: [],
-        available: true
+        available: true,
+        buttonValidity: false
       }
     },
     methods: {
@@ -87,7 +88,7 @@
           console.log(res);
 //          console.log(this);
 //          this.$router.push("/routes/search");
-          window.location.href = "/routes/";
+          window.location.href = "/";
         }).catch((error)=>{
           console.log(error)
         })
@@ -122,6 +123,12 @@
       } else{
         this.results = recResults;
         this.available = true;
+      }
+
+      var currentUser = JSON.parse(localStorage.getItem("user"));
+
+      if (currentUser.type === "NTC"){
+        this.buttonValidity = true;
       }
     }
   }
