@@ -29,6 +29,7 @@
       </v-tabs-bar>
       <v-tabs-items>
         <v-tabs-content id="bookings">
+          <v-card>
           <br>
           <v-alert
             color="success"
@@ -37,6 +38,9 @@
             v-show="banner1">
             Your cancellation was successful.
           </v-alert>
+          <v-card v-if="bookings.length==0" flat>
+            <h6 style="text-align: center; padding: 50px">No reservations made up to this point.</h6>
+          </v-card>
           <v-card
             hover
             ripple
@@ -92,6 +96,7 @@
               <v-flex md3 ></v-flex>
               <v-flex md3></v-flex>
             </v-layout>
+          </v-card>
           </v-card>
         </v-tabs-content>
         <v-tabs-content id="profile">
@@ -218,7 +223,9 @@
 
 <script>
   import axios from 'axios'
+  import VCard from "vuetify/es5/components/VCard/VCard";
 export default {
+  components: {VCard},
   name: 'settings',
   data () {
     return {

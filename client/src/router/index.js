@@ -8,6 +8,7 @@ import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
 import ManageBusOwner from '@/components/Owner/ManageBusOwner'
+import ManageBusOperator from '@/components/Operator/ManageBusOperator'
 import Reservation from '@/components/Reservation'
 
 //Routes
@@ -61,6 +62,11 @@ export default new Router({
       path: '/owner/managebus',
       name: 'ManageBusOwner',
       component: ManageBusOwner
+    },
+    {
+      path: '/operator/managebus',
+      name: 'ManageBusOperator',
+      component: ManageBusOperator
     },
     {
       path: '/routes',

@@ -38,6 +38,7 @@
             </tr>
           </template>
           <template slot="expand" slot-scope="props">
+            <v-layout row wrap>
             <v-flex xs6>
               <v-card flat>
                 <v-card-text><p>Number of rows in the right column: <strong style="font-size: 14px">{{props.item.r_rows}}</strong></p>
@@ -45,13 +46,23 @@
                   <p>Number of rows in the left column: <strong style="font-size: 14px">{{props.item.l_rows}}</strong></p>
                   <p>Number of seats per row in the left column: <strong style="font-size: 14px">{{props.item.l_seats}}</strong></p>
                 </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    v-on:click="selectBus(props.item.licence,props.item.type,props.item.r_rows,props.item.r_seats,props.item.l_rows,props.item.l_seats)"
-                  >Add Trip</v-btn>
-                </v-card-actions>
+                <!--<v-card-actions>-->
+                  <!--<v-btn-->
+                    <!--v-on:click="selectBus(props.item.licence,props.item.type,props.item.r_rows,props.item.r_seats,props.item.l_rows,props.item.l_seats)"-->
+                  <!--&gt;Add Trip</v-btn>-->
+                <!--</v-card-actions>-->
               </v-card>
             </v-flex>
+
+              <v-flex xs6>
+                <v-btn block
+                       color="success"
+                       v-on:click="selectBus(props.item.licence,props.item.type,props.item.r_rows,props.item.r_seats,props.item.l_rows,props.item.l_seats)"
+                       dark>Add Trips</v-btn>
+                <v-btn block color="warning" dark @click="editBus(props.item.licence)">Edit Bus</v-btn>
+                <v-btn block color="error" dark @click="deleteBus(props.item.licence)">Delete Bus</v-btn>
+              </v-flex>
+            </v-layout>
             <!--<v-card flat>-->
               <!--<v-card-text>{{props.item.r_rows}},{{props.item.l_rows}},{{props.item.r_seats}},{{props.item.l_seats}}</v-card-text>-->
             <!--</v-card>-->
@@ -66,9 +77,9 @@
           <v-dialog v-model="dialog" persistent max-width="1000px">
             <v-btn slot="activator">Add new Bus</v-btn>
             <v-card>
-              <v-card-title>
-                <span class="headline">Add New Bus</span>
-              </v-card-title>
+              <!--<v-card-title>-->
+                <!--<span class="headline">Add New Bus</span>-->
+              <!--</v-card-title>-->
               <v-card-text>
                 <v-container grid-list-md>
                   <v-layout wrap>
@@ -205,17 +216,23 @@
                     <v-flex xs12 style="margin-top: 20px">
                       <hr>
                       <v-subheader style="padding-left: 0px; margin-left: 0px; margin-top: 15px; height: 25px; font-size: 20px">Operator</v-subheader>
+                      <v-flex xs12 style="margin-top: 20px" v-if="(editing)&&(!editOpers)">
+                        <p style="font-size: 17px; text-align: center">Operator: {{operator[0]}},{{operator[1]}}</p>
+                        <v-btn block color="warning" dark @click="switchToEditOper">Update Operator</v-btn>
+                      </v-flex>
                       <v-switch :label="operatorMessage"
                                 v-model="operatorType"
                                 :disabled="operators.length===0"
                                 color="red darken-3"
                                 hide-details
+                                v-if="(!editing)||(editOpers)"
                                 style="margin-left: 50px; margin-top: 20px"
                                 @change="operatorChange">
+
                       </v-switch>
                     </v-flex>
                     </v-form>
-                    <v-flex xs12>
+                    <v-flex xs12 v-if="(!editing)||(editOpers)">
                       <v-form v-model="validSelect" ref="formSelect">
                         <v-card flat style="padding: 50px; height: 230px" v-show="!operatorType">
                           <v-select
@@ -248,11 +265,18 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="dialog = false" >Close</v-btn>
+                <v-btn color="blue darken-1" flat @click.native="dialog = false" @click="closeForm">Close</v-btn>
+                <v-btn color="blue darken-1" flat @click="clearForm">Clear</v-btn>
                 <v-btn color="blue darken-1"
+                       v-if="(!editing)"
                        flat @click.native="dialog = false" @click="addNewBus"
                        :disabled="(!valid)||(((!validNew)&&(operatorType))||((!validSelect)&&(!operatorType)))"
                 >Add Bus</v-btn>
+                <v-btn color="blue darken-1"
+                       v-if="(editing)"
+                       flat @click.native="dialog = false" @click="updateBus"
+                       :disabled="((editOpers)&&((!valid)||(((!validNew)&&(operatorType))||((!validSelect)||(!operatorType)))))&&((!editOpers)&&((!valid)))"
+                >Update Bus</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -304,7 +328,7 @@ export default {
 
     operatoremail:'',
     owner:JSON.parse(localStorage.getItem("user")).id,
-    operator:null,
+    operator:['',''],
     operators:[],
     imageButton:"Upload Image",
 
@@ -314,9 +338,14 @@ export default {
     image:null,
 
     operatorType:true,
-    operatorMessage:'Select existing operator or owner as the operator',
+    operatorMessage:'Select existing operator as the operator',
 
     buses:[],
+
+    editing:false,
+    editOpers:false,
+    bus_state:"",
+    orig_licence:'',
 
     tmp: '',
     search: '',
@@ -386,6 +415,9 @@ export default {
         this.operatorMessage='Add new operator';
       }
     },
+//    aaaaa(){
+//      console.log(this.operator);
+//    },
     addNewBus(){
       if (this.$refs.form.validate()) {
         if((this.validNew)&&(this.operatorType)) {
@@ -460,12 +492,178 @@ export default {
           }).then((response) => {
             console.log(response.data);
             this.message = response.data.msg;
+            location.reload();
           })
             .catch(function (error) {
               console.log(error);
             });
         }
       }
+    },
+    editBus(lic){
+      this.editing=true;          //Set to false later in update
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/owner/getbus',
+        data:{licence:lic},
+        headers: {'Content-Type': 'application/json','Authorization':this.token}
+      }).then((response) => {
+        if(response.data.success){
+//          console.log([response.data.bus.operator_id,response.data.bus.name]);
+          this.licence=response.data.bus.licence_no;
+          this.orig_licence=response.data.bus.licence_no;
+            this.operatorType=false;
+            this.bus_type= response.data.bus.type;
+            this.r_rows=response.data.bus.r_rows;
+            this.l_rows=response.data.bus.l_rows;
+            this.r_seats=response.data.bus.r_seats;
+            this.l_seats=response.data.bus.l_seats;
+            this.operator=[response.data.bus.operator_id,response.data.bus.name];
+            this.bus_state=response.data.bus.state;
+
+          this.dialog=true;
+        }
+      })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    deleteBus(lic){
+      if (confirm("Are you sure you want to delete this bus? *This will delete assigned trips as well") == true) {
+        axios({
+          method: 'post',
+          url: 'http://localhost:3000/owner/deletebus',
+          data:{licence:lic},
+          headers: {'Content-Type': 'application/json','Authorization':this.token}
+        }).then((response) => {
+          if(response.data.success){
+            this.message = response.data.msg;
+            location.reload();
+          }
+          else{
+            this.message = response.data.msg;
+          }
+        })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+
+    },
+    switchToEditOper(){
+      if (confirm("Change the current Operator? *Please close the form if you decide not to midway") == true) {
+        this.operator=["",""];
+        this.editOpers=true;
+//        this.validSelect= false;
+//        this.validNew= false;
+      }
+    },
+    updateBus(){
+      console.log(this.orig_licence);
+      if (this.$refs.form.validate()) {
+        if(!this.editOpers){
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/owner/editbus',
+            data: {
+              licence: this.licence,
+              orig_licence: this.orig_licence,
+              type: this.bus_type,
+              r_rows: this.r_rows,
+              l_rows: this.l_rows,
+              r_seats: this.r_seats,
+              l_seats: this.l_seats,
+              photo: JSON.stringify(this.image),
+              owner: this.owner,
+              operator: this.operator[0],
+              state: this.bus_state
+            },
+            headers: {'Content-Type': 'application/json', 'Authorization': this.token}
+          }).then((response) => {
+            console.log(response.data);
+            this.message = response.data.msg;
+            location.reload();
+          })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+        else {
+          if ((this.validNew) && (this.operatorType)) {
+            axios({
+              method: 'post',
+              url: 'http://localhost:3000/owner/editopnbus',
+              data: {
+                licence: this.licence,
+                orig_licence: this.orig_licence,
+                type: this.bus_type,
+                r_rows: this.r_rows,
+                l_rows: this.l_rows,
+                r_seats: this.r_seats,
+                l_seats: this.l_seats,
+                photo: this.ImageUrl,
+                owner: this.owner,
+                email: this.operatoremail,
+                state: 'waiting'
+              },
+              headers: {'Content-Type': 'application/json', 'Authorization': this.token}
+            }).then((response) => {
+              console.log(response.data);
+              if (!response.data.success) {
+                this.message = response.data.msg;
+              }
+              else {
+                this.message = response.data.msg;
+              }
+            })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+          else if ((this.validSelect) && (!this.operatorType)) {
+            axios({
+              method: 'post',
+              url: 'http://localhost:3000/owner/editbus',
+              data: {
+                licence: this.licence,
+                orig_licence: this.orig_licence,
+                type: this.bus_type,
+                r_rows: this.r_rows,
+                l_rows: this.l_rows,
+                r_seats: this.r_seats,
+                l_seats: this.l_seats,
+                photo: JSON.stringify(this.image),
+                owner: this.owner,
+                operator: this.operator[0],
+                state: 'waiting'
+              },
+              headers: {'Content-Type': 'application/json', 'Authorization': this.token}
+            }).then((response) => {
+              console.log(response.data);
+              this.message = response.data.msg;
+              location.reload();
+            })
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        }
+      }
+      this.editOpers=false;
+      this.editing=false;
+    },
+    closeForm(){
+      this.editOpers=false;
+      this.editing=false;
+    },
+    clearForm(){
+      this.licence="";
+      this.bus_type= "";
+      this.r_rows=10;
+      this.l_rows=8;
+      this.r_seats=2;
+      this.l_seats=2;
+      this.operator=["",""];
     }
   },
   mounted(){
@@ -475,7 +673,7 @@ export default {
       data:{owner_id:this.owner },
       headers: {'Content-Type': 'application/json','Authorization':this.token}
     }).then((response) => {
-      console.log(JSON.stringify(response.data.buses));
+//      console.log(JSON.stringify(response.data.buses));
       if(response.data.success){
         for (var oper in response.data.operators) {
           this.operators.push([response.data.operators[oper].operator_id,response.data.operators[oper].name])
@@ -495,6 +693,18 @@ export default {
               r_seats:response.data.buses[bus].r_seats,
               l_seats:response.data.buses[bus].l_seats,
               state:"Waiting for Operator's response",
+              operator:response.data.buses[bus].operator_id+","+response.data.buses[bus].name
+            })
+          }
+          else if(response.data.buses[bus].state==="rejected"){
+            this.buses.push({
+              licence:response.data.buses[bus].licence_no,
+              type: response.data.buses[bus].type,
+              r_rows:response.data.buses[bus].r_rows,
+              l_rows:response.data.buses[bus].l_rows,
+              r_seats:response.data.buses[bus].r_seats,
+              l_seats:response.data.buses[bus].l_seats,
+              state:"Assigned operator rejected the Bus. Reassign the operator.",
               operator:response.data.buses[bus].operator_id+","+response.data.buses[bus].name
             })
           }

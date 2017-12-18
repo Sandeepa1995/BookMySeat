@@ -93,6 +93,14 @@
               {icon:"settings", title:"Options", link:'/settings'}    //Logged in nav components
             ]
           }
+          else if(user.type==="Bus Operator"){
+            menuItems = [
+              {icon: 'search', title: 'Search Trips', link: '/searchBus'},
+              {icon: 'search', title: 'Search Routes', link: '/routes/search'},
+              {icon:"directions_bus", title:"Manage Buses", link:'/operator/managebus'},
+              {icon:"settings", title:"Options", link:'/settings'}
+            ]
+          }
           else{
             menuItems = [
               {icon: 'search', title: 'Search Trips', link: '/searchBus'},

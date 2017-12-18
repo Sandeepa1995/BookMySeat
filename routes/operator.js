@@ -35,7 +35,7 @@ router.post('/authenticate',(req,res,next)=>{
                             expiresIn: 604800 //1 week
                         });
 
-                        return res.json({success:true,token:'JWT '+token,user:{email:results[0].email,name:results[0].name,type:"Bus Operator",contact:results[0].contact_no}})
+                        return res.json({success:true,token:'JWT '+token,user:{id:results[0].operator_id,email:results[0].email,name:results[0].name,type:"Bus Operator",contact:results[0].contact_no}})
                         // return res.json({success:true,token:'JWT '+token,user:results[0]})
                     }
                     else{
@@ -139,6 +139,54 @@ router.get('/getlist',passport.authenticate('jwt',{session:false}),(req,res,next
         }
         else{
             return res.json({success:true,operators:results})
+        }
+    });
+});
+
+//Manage Bus Load
+router.post('/managebus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    sqlcon.connection.query("SELECT licence_no,type,r_rows,l_rows,r_seats,l_seats,state,name,owner_id FROM bus NATURAL JOIN owner WHERE operator_id=?",[req.body.operator_id], function (er, resul, fields) {
+        if (er){
+            throw er;
+            return res.json({success: false})
+        }
+        if (resul) {
+            console.log(resul);
+            return res.json({success: true, buses:resul})
+        }
+    });
+});
+
+//Accept Bus
+router.post('/acceptbus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    sqlcon.connection.query("UPDATE bus SET state=? WHERE licence_no=?",[
+        "Running",
+        req.body.licence
+    ], function (er, resul, fields) {
+        if (er){
+            throw er;
+            return res.json({success: false, msg:"Error"});
+        }
+        if (resul) {
+            console.log(resul);
+            return res.json({success: true, msg:"Successfully assumed duties as the operator"})
+        }
+    });
+});
+
+//Reject Bus
+router.post('/rejectbus',passport.authenticate('jwt',{session:false}),(req,res,next)=>{
+    sqlcon.connection.query("UPDATE bus SET state=? WHERE licence_no=?",[
+        "rejected",
+        req.body.licence
+    ], function (er, resul, fields) {
+        if (er){
+            throw er;
+            return res.json({success: false, msg:"Error"});
+        }
+        if (resul) {
+            console.log(resul);
+            return res.json({success: true, msg:"Successfully rejected the bus"})
         }
     });
 });
