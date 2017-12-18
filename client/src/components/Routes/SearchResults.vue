@@ -33,6 +33,7 @@
                         <v-btn
                           color="primary"
                           v-on:click="editRoute(result.routeID)"
+                          v-if="buttonValidity"
                         >
                           Edit
                         </v-btn>
@@ -40,6 +41,7 @@
                         <v-btn
                           color="error"
                           v-on:click="deleteRoute(result.routeID)"
+                          v-if="buttonValidity"
                         >
                           Delete
                         </v-btn>
@@ -69,7 +71,8 @@
       return{
         title: "Search Results",
         results: [],
-        available: true
+        available: true,
+        buttonValidity: false
       }
     },
     methods: {
@@ -122,6 +125,12 @@
       } else{
         this.results = recResults;
         this.available = true;
+      }
+
+      var currentUser = JSON.parse(localStorage.getItem("user"));
+
+      if(currentUser.type === "NTC"){
+        this.buttonValidity = true;
       }
     }
   }
