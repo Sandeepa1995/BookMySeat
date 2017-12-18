@@ -2,14 +2,15 @@
   <v-container class="mt-0">
     <v-layout row>
       <v-flex xs12>
-        <h3 class="text-xs-center mt-1">Search for Trips</h3>
+        <h3 class="text-xs-center mt-1" style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Search for Trips</h3>
       </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <h6 class="text-xs-center">Please enter the destination you want to travel to, in order to find available trips.</h6>
+        <h6 class="text-xs-center" style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Please enter the destination you want to travel to, in order to find available trips.</h6>
       </v-flex>
     </v-layout>
+    <v-card>
     <v-layout>
       <v-flex xs12 md4 offset-md4>
         <v-alert
@@ -74,19 +75,24 @@
         >Search</v-btn>
       </v-flex>
     </v-layout>
+
     <v-layout row>
       <v-flex xs12 sm6 offset-sm3>
 
       </v-flex>
 
     </v-layout>
+    </v-card>
   </v-container>
 </template>
 
 
 <script>
+  import VCard from "vuetify/es5/components/VCard/VCard";
+
   const axios = require('axios');
   export default {
+    components: {VCard},
     name: 'searchBus',
     data() {
       return {

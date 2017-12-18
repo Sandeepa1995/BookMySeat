@@ -23,7 +23,6 @@
             <v-spacer></v-spacer>
             <v-card-actions>
               <v-btn
-                outline
                 flat
                 color="blue"
                 class="mt-2 ml-3"

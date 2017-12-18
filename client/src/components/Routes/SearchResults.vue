@@ -4,7 +4,7 @@
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex xs12>
-          <h3 id="title">{{title}}</h3>
+          <h3 style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;" id="title">{{title}}</h3>
 
           <v-card v-if="!available">
             <v-alert color="error" icon="warning" value="true">

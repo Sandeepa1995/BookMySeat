@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <v-card style="padding: 50px">
     <h3>{{ title }}</h3>
     <v-alert color="error" icon="warning" transition="scale-transition" value="true" v-show="message">
       {{message}}
@@ -7,6 +8,7 @@
     <v-alert color="success" icon="check_circle" transition="scale-transition" value="true" v-show="passedmessage">
       {{passedmessage}}
     </v-alert>
+
     <v-form v-model="valid" ref="form">
       <v-select
         v-bind:items="items"
@@ -39,12 +41,15 @@
         submit
       </v-btn>
     </v-form>
+    </v-card>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
+  import VCard from "vuetify/es5/components/VCard/VCard";
 export default {
+  components: {VCard},
   name: 'login',
   data: () => ({
     title: 'Login to BookMySeat',
