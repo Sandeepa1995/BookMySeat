@@ -1,10 +1,10 @@
 <template>
   <div class="register">
-    <h4>{{ title }}</h4>
+    <h4 style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">{{ title }}</h4>
     <v-alert color="error" icon="warning" transition="scale-transition" value="true" v-show="message.length>0">
       {{message}}
     </v-alert>
-    <v-card>
+    <v-card style="padding: 50px">
     <v-form v-model="valid" ref="form">
       <v-text-field
         label="NIC Number"

@@ -1,8 +1,9 @@
 <template>
   <v-container>
     <v-flex xs12 class="mt-3">
-      <h3 class="text-xs-center mt-1">Add New Trips</h3>
+      <h3 class="text-xs-center mt-1" style="text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Add New Trips</h3>
     </v-flex>
+    <v-card style="padding: 50px">
     <v-layout>
       <v-flex md8 offset-md2>
         <v-alert
@@ -133,6 +134,7 @@
         </v-form>
       </v-flex>
     </v-layout>
+    </v-card>
   </v-container>
 
 
