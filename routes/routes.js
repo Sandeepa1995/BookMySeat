@@ -30,14 +30,14 @@ router.post("/new", (req, res)=>{
     db.query(sql, [routeNum, routeStart, routeEnd],(error, result)=>{
         if(error){
             console.log(error);
-            return res.json({success: false, msg: "Failed to add route to the system"});
+            return res.json({success: false, passedmessage: "Failed to add route to the system"});
         } else{
             var sql2 = "SELECT route_id FROM route WHERE route_num=? AND start=? AND end=?;";
 
             db.query(sql2, [routeNum, routeStart, routeEnd], function(error, foundID){
                 if(error){
                     console.log(error);
-                    return res.json({success: false, msg: "Failed to add route to the system"});
+                    return res.json({success: false, passedmessage: "Failed to add route to the system"});
                 } else{
                     var routeID = foundID[0].route_id;
                     for(var i=0; i<routeStops.length; i++){
@@ -45,7 +45,7 @@ router.post("/new", (req, res)=>{
                         db.query(sql3, [routeID, routeStops[i], (i+1)], function(error, stop){
                             if(error){
                                 console.log(error);
-                                return res.json({success: false, msg: "Failed to add route to the system"});
+                                return res.json({success: false, passedmessage: "Failed to add route to the system"});
                             } else{
                                 console.log("Added stop to database");
                             }
@@ -54,7 +54,7 @@ router.post("/new", (req, res)=>{
                 }
             });
             console.log("Route added to the database");
-            return res.json({success:true, msg: "Route successfully added to the database"})
+            return res.json({success:true, passedmessage: "Route successfully added to the database"})
         }
     });
 });
@@ -119,7 +119,7 @@ router.post("/search", (req, res)=>{
                 }
                 setTimeout(()=>{
                     return res.json({success: true, msg:output})
-                }, 1000);
+                }, 2000);
             }
         }
     });
@@ -253,7 +253,6 @@ router.post("/:id/edit", (req, res)=>{
             });
         }
     });
-
 });
 
 module.exports = router;

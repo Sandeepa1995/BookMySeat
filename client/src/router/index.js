@@ -8,11 +8,9 @@ import SearchBus from '@/components/SearchBus'
 import Results from '@/components/Results'
 import AddTrips from '@/components/AddTrips'
 import ManageBusOwner from '@/components/Owner/ManageBusOwner'
-import ManageBusOperator from '@/components/Operator/ManageBusOperator'
 import Reservation from '@/components/Reservation'
 
 //Routes
-import RoutesHome from '../components/Routes/RoutesHome.vue'
 import NewRoute from '../components/Routes/NewRoute.vue'
 import SearchRoutes from '../components/Routes/SearchRoutes.vue'
 import SearchResults from '../components/Routes/SearchResults.vue'
