@@ -4,6 +4,7 @@
     <v-alert color="error" icon="warning" transition="scale-transition" value="true" v-show="message.length>0">
       {{message}}
     </v-alert>
+    <v-card>
     <v-form v-model="valid" ref="form">
       <v-text-field
         label="NIC Number"
@@ -63,12 +64,15 @@
       </v-btn>
       <v-btn @click="clear">clear</v-btn>
     </v-form>
+    </v-card>
   </div>
 </template>
 
 <script>
   import axios from 'axios'
+  import VCard from "vuetify/es5/components/VCard/VCard";
 export default {
+  components: {VCard},
   name: 'register',
   data: () => ({
     title: 'Register to BookMySeat as a Passenger',
