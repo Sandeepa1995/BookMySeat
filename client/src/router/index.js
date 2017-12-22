@@ -20,7 +20,7 @@ import EditRoute from '../components/Routes/EditRoute.vue'
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode:'history',
   routes: [
     {
@@ -100,3 +100,26 @@ export default new Router({
     }
   ]
 })
+
+
+router.beforeEach((to,from,next)=>{
+  // console.log(to);
+  if(to.meta.requiresAuth){
+    var loggeduser= localStorage.getItem("user");
+    console.log(loggeduser);
+    if (loggeduser===null) {
+      next();
+    }
+    else {
+      console.log("A");
+      next({path:'/'});
+    }
+    // next();
+  }
+  else {
+    next();
+  }
+  next();
+});
+
+export default router;
